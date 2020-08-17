@@ -1,5 +1,5 @@
-# ---- PHP code ----
 FROM php:7.4-fpm
+
 RUN docker-php-ext-install pdo_mysql
 RUN pecl install apcu
 RUN apt-get update && \
@@ -8,11 +8,15 @@ RUN apt-get update && \
     libxml2-dev \
     libzip-dev \
     g++
-
 RUN docker-php-ext-configure intl && \
     docker-php-ext-install zip intl && \
     docker-php-ext-enable apcu
 
-COPY ./app /app/symfony
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-WORKDIR /app/symfony
+COPY . /app/linking
+
+WORKDIR /app/linking
+
+RUN chmod +x bin/console
