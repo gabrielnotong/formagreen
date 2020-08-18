@@ -76,7 +76,7 @@ class AppFixtures extends Fixture
 
             $user = $users[mt_rand(0, count($users) - 1)];
 
-            $picture = 'https://i.picsum.photos/id/';
+            $picture = 'https://picsum.photos/id/';
             $pictureId = $faker->numberBetween(1, 500) . '/600/300.jpg';
             $imageApiUrl = $picture . $pictureId;
 

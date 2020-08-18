@@ -55,8 +55,7 @@ class AccountController extends AbstractController
         Request $request,
         EntityManagerInterface $manager,
         UserPasswordEncoderInterface $encoder
-    ): Response
-    {
+    ): Response {
         $user = new User();
 
         $form = $this->createForm(RegistrationType::class, $user);

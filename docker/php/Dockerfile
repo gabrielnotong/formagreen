@@ -15,8 +15,8 @@ RUN docker-php-ext-configure intl && \
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-COPY . /app/linking
+COPY . /app/website
 
-WORKDIR /app/linking
+WORKDIR /app/website
 
 RUN chmod +x bin/console

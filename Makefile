@@ -1,5 +1,5 @@
 # To specify text which are not real files or dir
-.PHONY: install help up build prune down clean vendor all-tests functional-test unit-test
+.PHONY: install help up build prune down db clean vendor all-tests functional-test unit-test
 
 # make|make help, Displays help
 .DEFAULT_GOAL = help
@@ -33,9 +33,11 @@ down: ## Switches off all running containers
 
 bash:  ## To access php container in command line
 	$(DOCKER_COMPOSE) exec php bash
-#
-#fixtures: migration ## Makes data available for the application
-#	$(EXEC_PHP) ./bin/console hautelook:fixtures:load --no-interaction --no-bundles
+
+db: migrate fixtures ## Makes database ready to be used
+
+fixtures: ## Makes data available for the application
+	$(EXEC_PHP) bin/console doctrine:fixtures:load --no-interaction
 
 migrate: db-drop db-create ## Updates database schema
 	$(EXEC_PHP) bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
@@ -44,10 +46,10 @@ migration: ## Generates migration files
 	$(EXEC_PHP) bin/console make:migration --no-interaction
 
 db-drop: ## Drops mysql database
-	$(EXEC_PHP) ./bin/console doctrine:database:drop --if-exists --force
+	$(EXEC_PHP) bin/console doctrine:database:drop --if-exists --force
 
 db-create: ## Creates mysql database
-	$(EXEC_PHP) ./bin/console doctrine:database:create --if-not-exists
+	$(EXEC_PHP) bin/console doctrine:database:create --if-not-exists
 
 clean: prune ## Stops and clean all containers and volumes; removes vendor and var folders
 	rm -rf vendor; rm -rf var
