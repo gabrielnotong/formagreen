@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use Cocur\Slugify\Slugify;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -123,6 +126,31 @@ class User implements UserInterface
      */
     private Collection $adLikes;
 
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private ?DateTimeInterface $startsAt = null;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private ?DateTimeInterface $endsAt = null;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private ?string $qrCode = null;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $phoneNumber = null;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Prestation::class, mappedBy="userMember")
+     */
+    private Collection $prestations;
+
     public function __construct()
     {
         $this->ads = new ArrayCollection();
@@ -130,6 +158,7 @@ class User implements UserInterface
         $this->bookings = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->adLikes = new ArrayCollection();
+        $this->prestations = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -429,6 +458,85 @@ class User implements UserInterface
                 $adLike->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Prestation[]
+     */
+    public function getPrestations(): Collection
+    {
+        return $this->prestations;
+    }
+
+    public function addPrestation(Prestation $prestation): self
+    {
+        if (!$this->prestations->contains($prestation)) {
+            $this->prestations[] = $prestation;
+            $prestation->setUserMember($this);
+        }
+
+        return $this;
+    }
+
+    public function removePrestation(Prestation $prestation): self
+    {
+        if ($this->prestations->contains($prestation)) {
+            $this->prestations->removeElement($prestation);
+            // set the owning side to null (unless already changed)
+            if ($prestation->getUserMember() === $this) {
+                $prestation->setUserMember(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getStartsAt(): ?DateTimeInterface
+    {
+        return $this->startsAt;
+    }
+
+    public function setStartsAt(DateTimeInterface $startsAt): self
+    {
+        $this->startsAt = $startsAt;
+
+        return $this;
+    }
+
+    public function getEndsAt(): ?DateTimeInterface
+    {
+        return $this->endsAt;
+    }
+
+    public function setEndsAt(DateTimeInterface $endsAt): self
+    {
+        $this->endsAt = $endsAt;
+
+        return $this;
+    }
+
+    public function getQrCode(): ?string
+    {
+        return $this->qrCode;
+    }
+
+    public function setQrCode(?string $qrCode): self
+    {
+        $this->qrCode = $qrCode;
+
+        return $this;
+    }
+
+    public function getPhoneNumber(): ?string
+    {
+        return $this->phoneNumber;
+    }
+
+    public function setPhoneNumber(?string $phoneNumber): self
+    {
+        $this->phoneNumber = $phoneNumber;
 
         return $this;
     }

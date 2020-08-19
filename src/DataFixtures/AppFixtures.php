@@ -6,9 +6,16 @@ use App\Entity\Ad;
 use App\Entity\AdLike;
 use App\Entity\Booking;
 use App\Entity\Comment;
+use App\Entity\Discount;
+use App\Entity\GreenSpace;
 use App\Entity\Image;
+use App\Entity\Partner;
+use App\Entity\Prestation;
 use App\Entity\Role;
+use App\Entity\StructureType;
+use App\Entity\TrainingStructure;
 use App\Entity\User;
+use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -28,10 +35,15 @@ class AppFixtures extends Fixture
         $faker = Factory::create();
         $users = [];
         $genders = ['male', 'female'];
+        $roleNames = ['ROLE_MEMBER', 'ROLE_ADMIN'];
 
-        $adminRole = new Role();
-        $adminRole->setName('ROLE_ADMIN');
-        $manager->persist($adminRole);
+        $roles = [];
+        for ($i = 0; $i<count($roleNames); $i++) {
+            $role = (new Role())->setName($roleNames[$i]);
+
+            $roles[] = $role;
+            $manager->persist($role);
+        }
 
         $adminUser = new User();
         $adminUser->setFirstName('Gabriel')
@@ -41,11 +53,12 @@ class AppFixtures extends Fixture
             ->setIntroduction($faker->sentence)
             ->setDescription('<p>' . join('<p></p>', $faker->paragraphs(2)) . '</p>')
             ->setHash($this->encoder->encodePassword($adminUser, 'password'))
-            ->addUserRole($adminRole);
+            ->addUserRole($roles[1]);
         $manager->persist($adminUser);
 
-        // Manage fake users
-        for ($i = 1; $i <= 10; $i++) {
+        $startDate = new DateTime('now');
+        // Manage fake members
+        for ($i = 0; $i <= 9; $i++) {
             $user = new User();
 
             $gender = $faker->randomElement($genders);
@@ -56,17 +69,115 @@ class AppFixtures extends Fixture
             $picture .= ($gender == 'male' ? 'men/' : 'women/') . $pictureId;
 
             $hash = $this->encoder->encodePassword($user, 'password');
+
+            $endDate = new DateTime('+' .($faker->numberBetween(6, 12)) .' months');
             $user->setFirstName($faker->firstName($gender))
                 ->setLastName($faker->lastName)
                 ->setEmail($faker->email)
                 ->setIntroduction($faker->sentence)
                 ->setDescription('<p>' . join('<p></p>', $faker->paragraphs(2)) . '</p>')
                 ->setPicture($picture)
-                ->setHash($hash);
+                ->setHash($hash)
+                ->addUserRole($roles[0])
+                ->setQrCode($faker->isbn13)
+                ->setPhoneNumber($faker->phoneNumber)
+                ->setStartsAt($startDate)
+                ->setEndsAt($endDate)
+            ;
 
             $manager->persist($user);
             $users[] = $user;
         }
+
+        // Manage fake partners
+        $partners = [];
+        for ($i = 0; $i <= 9; $i++) {
+            $partner = (new Partner())
+                ->setName($faker->company)
+                ->setEmail($faker->companyEmail)
+                ->setPhoneNumber($faker->e164PhoneNumber)
+                ->setAddress($faker->address)
+            ;
+
+            $partners[] = $partner;
+            $manager->persist($partner);
+        }
+
+        // Manage fake discounts
+        $discounts = [];
+        for ($i = 0; $i <= 9; $i++) {
+            $endDate = new DateTime('+' .($faker->numberBetween(1, 3)) .' months');
+            $discount = (new Discount())
+                ->setPercentage($faker->numberBetween(2, 6))
+                ->setPartner($partners[$i])
+                ->setDescription('Discount on all tools in my shop')
+                ->setStartsAt($startDate)
+                ->setEndsAt($endDate)
+            ;
+
+            $discounts[] = $discount;
+            $manager->persist($discount);
+        }
+
+        // Manage fake training structures type
+        $types = ['School', 'University', 'Center', 'Parc'];
+        $structureTypes = [];
+        for ($i = 0; $i <= 3; $i++) {
+            $structureType = (new StructureType())
+                ->setName($types[$i])
+                ->setDescription($types[$i] . ' ' . $faker->city)
+            ;
+
+            $structureTypes[] = $structureType;
+            $manager->persist($structureType);
+        }
+
+        // Manage fake training structures
+        $trainingStructures = [];
+        for ($i = 0; $i <= 9; $i++) {
+            $structure = (new TrainingStructure())
+                ->setName($faker->company)
+                ->setAddress($faker->address)
+                ->setCity($faker->city)
+                ->setCountry($faker->country)
+                ->setType($structureTypes[$faker->numberBetween(0, 3)])
+            ;
+
+            $trainingStructures[] = $structure;
+            $manager->persist($structure);
+        }
+
+
+        // Manage fake green spaces
+        $greenSpaces = [];
+        for ($i = 0; $i <= 9; $i++) {
+            $greenSpace = (new GreenSpace())
+                ->setName($faker->city)
+                ->setLatitude($faker->latitude)
+                ->setLongitude($faker->longitude)
+                ->setTrainingStructure($trainingStructures[$faker->numberBetween(0, 9)])
+            ;
+
+            $greenSpaces[] = $greenSpace;
+            $manager->persist($greenSpace);
+        }
+
+        // Manage fake prestations
+        $greenSpaceTypes = ['Maintenance', 'Installation'];
+        for ($i = 0; $i <= 9; $i++) {
+            $endDate = new DateTime('+' .($faker->numberBetween(1, 4)) .' weeks');
+            $prestation = (new Prestation())
+                ->setStartsAt($startDate)
+                ->setEndsAt($endDate)
+                ->setUserMember($users[$faker->numberBetween(0, 9)])
+                ->setDiscount($discounts[$faker->numberBetween(0, 9)])
+                ->setGreenSpace($greenSpaces[$faker->numberBetween(0, 9)])
+                ->setType($faker->randomElement($greenSpaceTypes))
+            ;
+
+            $manager->persist($prestation);
+        }
+
 
         // Manage Fake Ads
         for ($i = 0; $i < 30; $i++) {
