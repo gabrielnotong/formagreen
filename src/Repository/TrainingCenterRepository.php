@@ -2,25 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\TrainingStructure;
+use App\Entity\TrainingCenter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method TrainingStructure|null find($id, $lockMode = null, $lockVersion = null)
- * @method TrainingStructure|null findOneBy(array $criteria, array $orderBy = null)
- * @method TrainingStructure[]    findAll()
- * @method TrainingStructure[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method TrainingCenter|null find($id, $lockMode = null, $lockVersion = null)
+ * @method TrainingCenter|null findOneBy(array $criteria, array $orderBy = null)
+ * @method TrainingCenter[]    findAll()
+ * @method TrainingCenter[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class TrainingStructureRepository extends ServiceEntityRepository
+class TrainingCenterRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, TrainingStructure::class);
+        parent::__construct($registry, TrainingCenter::class);
     }
 
     // /**
-    //  * @return TrainingStructure[] Returns an array of TrainingStructure objects
+    //  * @return TrainingCenter[] Returns an array of TrainingCenter objects
     //  */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class TrainingStructureRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?TrainingStructure
+    public function findOneBySomeField($value): ?TrainingCenter
     {
         return $this->createQueryBuilder('t')
             ->andWhere('t.exampleField = :val')

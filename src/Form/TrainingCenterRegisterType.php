@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Form;
 
+use App\Entity\TrainingCenter;
 use App\Entity\UserLambda;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -12,42 +13,40 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class RegistrationType extends ApplicationType
+class TrainingCenterRegisterType extends ApplicationType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add(
-                'firstName',
+                'name',
                 TextType::class,
-                $this->getConfiguration('First name', 'Your First name...'),
+                $this->getConfiguration('Company Name', 'The company name...'),
             )
             ->add(
-                'lastName',
+                'email',
+                EmailType::class,
+                $this->getConfiguration('Email', 'Email...'),
+            )
+            ->add(
+                'address',
                 TextType::class,
-                $this->getConfiguration('Last name', 'Your Last name...'),
+                $this->getConfiguration('Address', 'Company address...'),
+            )
+            ->add(
+                'country',
+                TextType::class,
+                $this->getConfiguration('Country', 'Country where the company is based...'),
+            )
+            ->add(
+                'city',
+                TextType::class,
+                $this->getConfiguration('City', 'City where the company is located...'),
             )
             ->add(
                 'phoneNumber',
                 TextType::class,
                 $this->getConfiguration('Phone number', 'Enter your phone number here...'),
-            )
-            ->add(
-                'email',
-                EmailType::class,
-                $this->getConfiguration('Email', 'Your email address...'),
-            )
-            ->add(
-                'numberOfMonths',
-                ChoiceType::class,
-                [
-                    'label' => 'How long will you stay with us? (in months)',
-                    'choices' => [
-                        3 => 3,
-                        6 => 6,
-                        12 => 12
-                    ],
-                ],
             )
             ->add(
                 'hash',
@@ -65,7 +64,7 @@ class RegistrationType extends ApplicationType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => UserLambda::class,
+            'data_class' => TrainingCenter::class,
         ]);
     }
 }

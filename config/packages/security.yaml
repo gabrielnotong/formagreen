@@ -26,6 +26,8 @@ security:
                 target: homepage
         main:
             anonymous: lazy
+            user_checker: App\Security\UserChecker
+
             # SF will use the form located in account_login path to log user in: user provided by in_database provider
             provider: in_database
             form_login:

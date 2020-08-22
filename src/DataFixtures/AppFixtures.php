@@ -1,20 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DataFixtures;
 
-use App\Entity\Ad;
-use App\Entity\AdLike;
-use App\Entity\Booking;
-use App\Entity\Comment;
 use App\Entity\Discount;
 use App\Entity\GreenSpace;
-use App\Entity\Image;
 use App\Entity\Partner;
 use App\Entity\Prestation;
 use App\Entity\Role;
-use App\Entity\StructureType;
-use App\Entity\TrainingStructure;
-use App\Entity\User;
+use App\Entity\CenterType;
+use App\Entity\TrainingCenter;
+use App\Entity\UserLambda;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -45,13 +42,10 @@ class AppFixtures extends Fixture
             $manager->persist($role);
         }
 
-        $adminUser = new User();
+        $adminUser = new UserLambda();
         $adminUser->setFirstName('Gabriel')
             ->setLastName('Notong')
             ->setEmail('gabs@gmail.com')
-            ->setPicture('https://randomuser.me/api/portraits/men/53.jpg')
-            ->setIntroduction($faker->sentence)
-            ->setDescription('<p>' . join('<p></p>', $faker->paragraphs(2)) . '</p>')
             ->setHash($this->encoder->encodePassword($adminUser, 'password'))
             ->addUserRole($roles[1]);
         $manager->persist($adminUser);
@@ -59,7 +53,7 @@ class AppFixtures extends Fixture
         $startDate = new DateTime('now');
         // Manage fake members
         for ($i = 0; $i <= 9; $i++) {
-            $user = new User();
+            $user = new UserLambda();
 
             $gender = $faker->randomElement($genders);
 
@@ -74,9 +68,6 @@ class AppFixtures extends Fixture
             $user->setFirstName($faker->firstName($gender))
                 ->setLastName($faker->lastName)
                 ->setEmail($faker->email)
-                ->setIntroduction($faker->sentence)
-                ->setDescription('<p>' . join('<p></p>', $faker->paragraphs(2)) . '</p>')
-                ->setPicture($picture)
                 ->setHash($hash)
                 ->addUserRole($roles[0])
                 ->setQrCode($faker->isbn13)
@@ -123,7 +114,7 @@ class AppFixtures extends Fixture
         $types = ['School', 'University', 'Center', 'Parc'];
         $structureTypes = [];
         for ($i = 0; $i <= 3; $i++) {
-            $structureType = (new StructureType())
+            $structureType = (new CenterType())
                 ->setName($types[$i])
                 ->setDescription($types[$i] . ' ' . $faker->city)
             ;
@@ -135,7 +126,10 @@ class AppFixtures extends Fixture
         // Manage fake training structures
         $trainingStructures = [];
         for ($i = 0; $i <= 9; $i++) {
-            $structure = (new TrainingStructure())
+            $structure = new TrainingCenter();
+            $structure
+                ->setEmail($faker->email)
+                ->setHash($this->encoder->encodePassword($structure, 'password'))
                 ->setName($faker->company)
                 ->setAddress($faker->address)
                 ->setCity($faker->city)
@@ -176,94 +170,6 @@ class AppFixtures extends Fixture
             ;
 
             $manager->persist($prestation);
-        }
-
-
-        // Manage Fake Ads
-        for ($i = 0; $i < 30; $i++) {
-            $ad = new Ad();
-            $content = '<p>' . join('<p></p>', $faker->paragraphs(5)) . '</p>';
-            $title = $faker->sentence(2);
-
-            $user = $users[mt_rand(0, count($users) - 1)];
-
-            $picture = 'https://picsum.photos/id/';
-            $pictureId = $faker->numberBetween(1, 500) . '/600/300.jpg';
-            $imageApiUrl = $picture . $pictureId;
-
-            $ad->setTitle($title)
-                ->setCoverImage($imageApiUrl)
-                ->setIntroduction($faker->paragraph(2))
-                ->setContent($content)
-                ->setRooms(mt_rand(1, 5))
-                ->setPrice(mt_rand(25, 99))
-                ->setAuthor($user);
-
-            // manage Ad's Images
-            for ($k = 0; $k <= mt_rand(2, 5); $k++) {
-                $image = new Image();
-
-                $pictureId = $faker->numberBetween(1, 500) . '/600/300.jpg';
-                $imageApiUrl = $picture . $pictureId;
-
-                $image->setUrl($imageApiUrl)
-                    ->setCaption($faker->sentence(2))
-                    ->setAd($ad);
-
-                $manager->persist($image);
-            }
-
-            // manage Ad's Booking
-            for ($j = 1; $j <= mt_rand(0, 10); $j++) {
-                $booking = new Booking();
-
-                $createdAt = $faker->dateTimeBetween('-6 months');
-                $startDate = $faker->dateTimeBetween('-3 months');
-
-                // number of nights
-                $duration = mt_rand(1, 5);
-
-                // clone is used here in order to not modify startDate. So, a copy is used instead
-                $endDate = (clone $startDate)->modify("+{$duration} days");
-
-                $booker = $users[mt_rand(0, count($users) - 1)];
-
-                $amount = number_format(($ad->getPrice() ? $ad->getPrice() : 0) * $duration, 2);
-
-                $comment = $faker->paragraph();
-
-                $booking->setBooker($booker)
-                    ->setAd($ad)
-                    ->setCreatedAt($createdAt)
-                    ->setStartDate($startDate)
-                    ->setEndDate($endDate)
-                    ->setAmount((float)$amount)
-                    ->setComment($comment);
-
-                $manager->persist($booking);
-
-                // manage comments, some ads may not have a comment
-                if (mt_rand(0, 1)) {
-                    $comment = new Comment();
-                    $comment->setAuthor($booker)
-                        ->setRating(mt_rand(0, 5))
-                        ->setAd($ad)
-                        ->setContent('<p>' . join('<p></p>', $faker->paragraphs(mt_rand(1, 3))) . '</p>');
-
-                    $manager->persist($comment);
-                }
-
-                // manage likes
-                if (mt_rand(0,1)) {
-                    $like = new AdLike();
-                    $like->setUser($booker)
-                        ->setAd($ad);
-
-                    $manager->persist($like);
-                }
-            }
-
-            $manager->persist($ad);
         }
 
         $manager->flush();
