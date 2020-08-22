@@ -44,8 +44,8 @@ abstract class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(message="Email is mandatory")
-     * @Assert\Email()
+     * @Assert\NotBlank(message="Email is mandatory", groups={"training", "userLambda"})
+     * @Assert\Email(groups={"training", "userLambda"})
      */
     private ?string $email = null;
 
@@ -58,7 +58,8 @@ abstract class User implements UserInterface
      * @var string|null
      * @Assert\EqualTo(
      *     propertyPath="hash",
-     *     message="The two passwords are not the same !"
+     *     message="The two passwords are not the same !",
+     *     groups={"training", "userLambda"}
      * )
      */
     public ?string $passwordConfirm = null;
@@ -81,11 +82,14 @@ abstract class User implements UserInterface
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @Assert\NotBlank
      */
     private ?string $qrCode = null;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=14, nullable=true)
+     * @Assert\NotBlank
+     * @Assert\Length(min="10", max="14")
      */
     private ?string $phoneNumber = null;
 

@@ -23,6 +23,7 @@ class UserLambdaProfileType extends UserLambdaRegisterType
     {
         $resolver->setDefaults([
             'data_class' => UserLambda::class,
+            'validation_groups' => ['userLambda']
         ]);
     }
 }

@@ -24,6 +24,7 @@ class TrainingCenterProfileType extends TrainingCenterRegisterType
     {
         $resolver->setDefaults([
             'data_class' => TrainingCenter::class,
+            'validation_groups' => ['training']
         ]);
     }
 }

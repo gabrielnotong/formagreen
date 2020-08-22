@@ -7,6 +7,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
@@ -17,31 +18,43 @@ class TrainingCenter extends User
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\NotBlank(groups={"training"})
+     * @Assert\Length(min="3", max="255", groups={"training"})
      */
     private ?string $companyName = null;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Assert\NotBlank(groups={"training"})
+     * @Assert\Range(min="1", groups={"training"})
      */
     private ?int $streetNumber = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\NotBlank(groups={"training"})
+     * @Assert\Length(min="3", max="255", groups={"training"})
      */
     private ?string $streetName = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\NotBlank(groups={"training"})
+     * @Assert\Length(min="3", max="255", groups={"training"})
      */
     private ?string $country = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\NotBlank(groups={"training"})
+     * @Assert\Length(min="3", max="255", groups={"training"})
      */
     private ?string $city = null;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=5, nullable=true)
+     * @Assert\NotBlank(groups={"training"})
+     * @Assert\Length(min="5", max="5", groups={"training"})
      */
     private ?string $zipCode = null;
 

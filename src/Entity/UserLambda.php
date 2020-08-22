@@ -15,13 +15,13 @@ class UserLambda extends User
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Assert\NotBlank(message="First name is mandatory")
+     * @Assert\NotBlank(message="First name is mandatory", groups={"userLambda"})
      */
     private ?string $firstName = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Assert\NotBlank(message="Last name is mandatory")
+     * @Assert\NotBlank(message="Last name is mandatory", groups={"userLambda"})
      */
     private ?string $lastName = null;
 

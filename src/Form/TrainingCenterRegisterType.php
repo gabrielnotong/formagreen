@@ -92,6 +92,7 @@ class TrainingCenterRegisterType extends ApplicationType
     {
         $resolver->setDefaults([
             'data_class' => TrainingCenter::class,
+            'validation_groups' => ['training']
         ]);
     }
 }

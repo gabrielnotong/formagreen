@@ -63,6 +63,7 @@ class UserLambdaRegisterType extends ApplicationType
     {
         $resolver->setDefaults([
             'data_class' => UserLambda::class,
+            'validation_groups' => ['userLambda']
         ]);
     }
 }
