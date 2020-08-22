@@ -61,6 +61,7 @@ class TrainingCenter extends User
     /**
      * @ORM\ManyToOne(targetEntity=CenterType::class, inversedBy="trainingCenters")
      * @ORM\JoinColumn(nullable=true)
+     * @Assert\NotBlank(message="This value should not be blank. You must create a Center Type first", groups={"training"})
      */
     private ?CenterType $centerType = null;
 
