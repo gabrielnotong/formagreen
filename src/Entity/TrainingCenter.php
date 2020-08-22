@@ -4,48 +4,42 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Repository\TrainingStructureRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=TrainingStructureRepository::class)
+ * @ORM\Entity
  */
-class TrainingStructure
+class TrainingCenter extends User
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private ?int $id = null;
+    const QRCODE_CONTENT = "Name: %s\nEmail: %s\nMember: from %s to %s\nAddress: %s\nCountry: %s\nCity: %s\nPhone number: %s";
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private ?string $name = null;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private ?string $address = null;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private ?string $country = null;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private ?string $city = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity=StructureType::class, inversedBy="trainingStructures")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity=CenterType::class, inversedBy="trainingStructures")
+     * @ORM\JoinColumn(nullable=true)
      */
-    private ?StructureType $type = null;
+    private ?CenterType $type = null;
 
     /**
      * @ORM\OneToMany(targetEntity=GreenSpace::class, mappedBy="trainingStructure", orphanRemoval=true)
@@ -54,12 +48,13 @@ class TrainingStructure
 
     public function __construct()
     {
+        parent::__construct();
         $this->greenSpaces = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function __toString(): string
     {
-        return $this->id;
+        return $this->getName();
     }
 
     public function getName(): ?string
@@ -110,12 +105,12 @@ class TrainingStructure
         return $this;
     }
 
-    public function getType(): ?StructureType
+    public function getType(): ?CenterType
     {
         return $this->type;
     }
 
-    public function setType(?StructureType $type): self
+    public function setType(?CenterType $type): self
     {
         $this->type = $type;
 

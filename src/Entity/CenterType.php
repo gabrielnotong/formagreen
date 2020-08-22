@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Repository\StructureTypeRepository;
+use App\Repository\CenterTypeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=StructureTypeRepository::class)
  */
-class StructureType
+class CenterType
 {
     /**
      * @ORM\Id()
@@ -32,7 +32,7 @@ class StructureType
     private ?string $description = null;
 
     /**
-     * @ORM\OneToMany(targetEntity=TrainingStructure::class, mappedBy="type")
+     * @ORM\OneToMany(targetEntity=TrainingCenter::class, mappedBy="type")
      */
     private Collection $trainingStructures;
 
@@ -71,14 +71,14 @@ class StructureType
     }
 
     /**
-     * @return Collection|TrainingStructure[]
+     * @return Collection|TrainingCenter[]
      */
     public function getTrainingStructures(): Collection
     {
         return $this->trainingStructures;
     }
 
-    public function addTrainingStructure(TrainingStructure $trainingStructure): self
+    public function addTrainingStructure(TrainingCenter $trainingStructure): self
     {
         if (!$this->trainingStructures->contains($trainingStructure)) {
             $this->trainingStructures[] = $trainingStructure;
@@ -88,7 +88,7 @@ class StructureType
         return $this;
     }
 
-    public function removeTrainingStructure(TrainingStructure $trainingStructure): self
+    public function removeTrainingStructure(TrainingCenter $trainingStructure): self
     {
         if ($this->trainingStructures->contains($trainingStructure)) {
             $this->trainingStructures->removeElement($trainingStructure);

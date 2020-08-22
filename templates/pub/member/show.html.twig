@@ -6,9 +6,9 @@
     <div class="container">
         <div class="row align-items-center mb-5">
             <div class="col-3 text-center">
-                <img src="{{ user.picture }}" class="avatar mb-3" alt="{{ user }}">
+                <img src="{#{{ user.picture }}#}" class="avatar mb-3" alt="{{ user }}">
                 <br>
-                {{ ((user.ads | length) ~ ' Ads') | badge }}
+{#                {{ ((user.ads | length) ~ ' Ads') | badge }}#}
             </div>
             <div class="col-9">
                 <h1>{{ user }}</h1>
@@ -21,22 +21,9 @@
             </div>
         </div>
 
-        {{ user.description | raw }}
-
         <hr>
+        <img src="{{ qr_code_data_uri(user.qrCode, { writer: 'svg', size: 150 }) }}" />
 
-        <h2>{{ user }} Announcements</h2>
-
-        {% if user.ads | length > 0 %}
-            <div class="row">
-                {% for ad in user.ads %}
-                    {% include 'pub/ad/_announcement.html.twig' with {'ad': ad} %}
-                {% endfor %}
-            </div>
-        {% else %}
-            <div class="alert alert-warning">
-                {{ user }} does not yet have announcements
-            </div>
-        {% endif %}
+{#        <img src="{{ qr_code_path(user.qrCode) }}" />#}
     </div>
 {% endblock %}

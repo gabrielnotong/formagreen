@@ -4,11 +4,8 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\PasswordReset;
-use App\Entity\User;
-use App\Form\AccountType;
+use App\Entity\UserLambda;
 use App\Form\PasswordResetType;
-use App\Form\RegistrationType;
-use App\Repository\BookingRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -48,66 +45,6 @@ class AccountController extends AbstractController
     }
 
     /**
-     * UserPasswordEncoderInterface is used in order to tell symfony which algorithm to use (security.yml)
-     * @Route("/register", name="account_register")
-     */
-    public function register(
-        Request $request,
-        EntityManagerInterface $manager,
-        UserPasswordEncoderInterface $encoder
-    ): Response {
-        $user = new User();
-
-        $form = $this->createForm(RegistrationType::class, $user);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $password = $encoder->encodePassword($user, $user->getHash());
-            $user->setHash($password);
-
-            $manager->persist($user);
-            $manager->flush();
-
-            $this->addFlash(
-                'success',
-                'Your account has been successfully created. You can now log in'
-            );
-
-            return $this->redirectToRoute('account_login');
-        }
-
-        return $this->render('pub/account/registration.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * @Route("/account/profile", name="account_profile")
-     * @IsGranted("ROLE_USER")
-     */
-    public function profile(Request $request, EntityManagerInterface $manager): Response
-    {
-        $user = $this->getUser();
-
-        $form = $this->createForm(AccountType::class, $user);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $manager->persist($user);
-            $manager->flush();
-
-            $this->addFlash(
-                'success',
-                'Your profile has been successfully updated'
-            );
-        }
-
-        return $this->render('pub/account/profile.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
      * @Route("/account/password", name="account_password")
      * @IsGranted("ROLE_USER")
      */
@@ -122,7 +59,7 @@ class AccountController extends AbstractController
         $form = $this->createForm(PasswordResetType::class, $passwordReset);
         $form->handleRequest($request);
 
-        /** @var User $user */
+        /** @var UserLambda $user */
         $user = $this->getUser();
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -154,24 +91,8 @@ class AccountController extends AbstractController
      */
     public function me(): Response
     {
-        return $this->render('pub/user/show.html.twig', [
+        return $this->render('pub/member/show.html.twig', [
             'user' => $this->getUser(),
         ]);
-    }
-
-    /**
-     * @Route("/account/bookings", name="account_bookings")
-     */
-    public function booking(BookingRepository $bookingRepository): Response
-    {
-        // we use this, because in the template, we are unable to directly get bookings from the logged in user
-        // app.user.bookings
-        // todo: use in the template app.user.bookings after the above error is solved
-        // todo: Typed property Proxies\__CG__\App\Entity\User::$ must not be accessed before initialization (in __sleep)
-        // todo: This can also solve the problem temporary: public function __sleep(){return [];}
-        $bookings = $bookingRepository->findBy(['booker' => $this->getUser()]);
-
-        return $this->render('pub/account/bookings.html.twig', ['bookings' => $bookings]);
-
     }
 }

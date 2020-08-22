@@ -24,12 +24,12 @@ class GreenSpace
     /**
      * @ORM\Column(type="decimal", precision=8, scale=6)
      */
-    private ?string $latitude = null;
+    private ?float $latitude = null;
 
     /**
      * @ORM\Column(type="decimal", precision=9, scale=6)
      */
-    private ?string $longitude = null;
+    private ?float $longitude = null;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -42,10 +42,10 @@ class GreenSpace
     private Collection $prestations;
 
     /**
-     * @ORM\ManyToOne(targetEntity=TrainingStructure::class, inversedBy="greenSpaces")
+     * @ORM\ManyToOne(targetEntity=TrainingCenter::class, inversedBy="greenSpaces")
      * @ORM\JoinColumn(nullable=false)
      */
-    private ?TrainingStructure $trainingStructure = null;
+    private ?User $trainingStructure = null;
 
     public function __construct()
     {
@@ -62,7 +62,7 @@ class GreenSpace
         return $this->latitude;
     }
 
-    public function setLatitude(string $latitude): self
+    public function setLatitude(float $latitude): self
     {
         $this->latitude = $latitude;
 
@@ -74,7 +74,7 @@ class GreenSpace
         return $this->longitude;
     }
 
-    public function setLongitude(string $longitude): self
+    public function setLongitude(float $longitude): self
     {
         $this->longitude = $longitude;
 
@@ -124,12 +124,12 @@ class GreenSpace
         return $this;
     }
 
-    public function getTrainingStructure(): ?TrainingStructure
+    public function getTrainingStructure(): ?User
     {
         return $this->trainingStructure;
     }
 
-    public function setTrainingStructure(?TrainingStructure $trainingStructure): self
+    public function setTrainingStructure(?User $trainingStructure): self
     {
         $this->trainingStructure = $trainingStructure;
 

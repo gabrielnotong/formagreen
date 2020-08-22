@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\PrestationRepository;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -22,12 +23,12 @@ class Prestation
     /**
      * @ORM\Column(type="datetime")
      */
-    private ?\DateTimeInterface $startsAt = null;
+    private ?DateTimeInterface $startsAt = null;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private ?\DateTimeInterface $endsAt = null;
+    private ?DateTimeInterface $endsAt = null;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -55,24 +56,24 @@ class Prestation
         return $this->id;
     }
 
-    public function getStartsAt(): ?\DateTimeInterface
+    public function getStartsAt(): ?DateTimeInterface
     {
         return $this->startsAt;
     }
 
-    public function setStartsAt(\DateTimeInterface $startsAt): self
+    public function setStartsAt(DateTimeInterface $startsAt): self
     {
         $this->startsAt = $startsAt;
 
         return $this;
     }
 
-    public function getEndsAt(): ?\DateTimeInterface
+    public function getEndsAt(): ?DateTimeInterface
     {
         return $this->endsAt;
     }
 
-    public function setEndsAt(\DateTimeInterface $endsAt): self
+    public function setEndsAt(DateTimeInterface $endsAt): self
     {
         $this->endsAt = $endsAt;
 
