@@ -12,17 +12,16 @@ use Symfony\Component\Validator\Constraints as Assert;
 class UserLambda extends User
 {
     const QRCODE_CONTENT = "Name: %s\nEmail: %s\nMember: from %s to %s\nPhone number: %s";
-    const ADD_MONTHS = "+%d months";
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Assert\NotBlank(message="First name is mandatory")
+     * @Assert\NotBlank(message="First name is mandatory", groups={"userLambda"})
      */
     private ?string $firstName = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Assert\NotBlank(message="Last name is mandatory")
+     * @Assert\NotBlank(message="Last name is mandatory", groups={"userLambda"})
      */
     private ?string $lastName = null;
 
@@ -46,6 +45,10 @@ class UserLambda extends User
         if (empty($this->slug)) {
             $this->slug = (Slugify::create())->slugify($this->firstName . ' ' . $this->lastName);
         }
+    }
+    public function getType(): string
+    {
+        return parent::TYPE_USER_LAMBDA;
     }
 
     public function getFirstName(): ?string

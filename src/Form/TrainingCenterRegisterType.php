@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace App\Form;
 
+use App\Entity\CenterType;
 use App\Entity\TrainingCenter;
-use App\Entity\UserLambda;
+use App\Entity\User;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -19,7 +22,7 @@ class TrainingCenterRegisterType extends ApplicationType
     {
         $builder
             ->add(
-                'name',
+                'companyName',
                 TextType::class,
                 $this->getConfiguration('Company Name', 'The company name...'),
             )
@@ -29,14 +32,19 @@ class TrainingCenterRegisterType extends ApplicationType
                 $this->getConfiguration('Email', 'Email...'),
             )
             ->add(
-                'address',
-                TextType::class,
-                $this->getConfiguration('Address', 'Company address...'),
+                'streetNumber',
+                IntegerType::class,
+                $this->getConfiguration('Street Number', ''),
             )
             ->add(
-                'country',
+                'streetName',
                 TextType::class,
-                $this->getConfiguration('Country', 'Country where the company is based...'),
+                $this->getConfiguration('Street Name', 'Enter street name here...'),
+            )
+            ->add(
+                'zipCode',
+                TextType::class,
+                $this->getConfiguration('Zip code', 'Enter zip code...'),
             )
             ->add(
                 'city',
@@ -44,10 +52,29 @@ class TrainingCenterRegisterType extends ApplicationType
                 $this->getConfiguration('City', 'City where the company is located...'),
             )
             ->add(
+                'country',
+                TextType::class,
+                $this->getConfiguration('Country', 'Country where the company is based...'),
+            )
+            ->add(
                 'phoneNumber',
                 TextType::class,
                 $this->getConfiguration('Phone number', 'Enter your phone number here...'),
             )
+            ->add(
+                'numberOfMonths',
+                ChoiceType::class,
+                [
+                    'label' => 'How long will you stay with us? (in months)',
+                    'choices' => User::NUMBER_OF_MONTHS,
+                ],
+            )
+            ->add(
+                'centerType',
+                EntityType::class, [
+                    'class' => CenterType::class,
+                    'choice_label' => 'name'
+            ])
             ->add(
                 'hash',
                 PasswordType::class,
@@ -65,6 +92,7 @@ class TrainingCenterRegisterType extends ApplicationType
     {
         $resolver->setDefaults([
             'data_class' => TrainingCenter::class,
+            'validation_groups' => ['training']
         ]);
     }
 }

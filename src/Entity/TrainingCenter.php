@@ -7,42 +7,66 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
  */
 class TrainingCenter extends User
 {
-    const QRCODE_CONTENT = "Name: %s\nEmail: %s\nMember: from %s to %s\nAddress: %s\nCountry: %s\nCity: %s\nPhone number: %s";
+    const QRCODE_CONTENT = "Name: %s\nEmail: %s\nMember: from %s to %s\nAddress: %s\nPhone number: %s";
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\NotBlank(groups={"training"})
+     * @Assert\Length(min="3", max="255", groups={"training"})
      */
-    private ?string $name = null;
+    private ?string $companyName = null;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
+     * @Assert\NotBlank(groups={"training"})
+     * @Assert\Range(min="1", groups={"training"})
      */
-    private ?string $address = null;
+    private ?int $streetNumber = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\NotBlank(groups={"training"})
+     * @Assert\Length(min="3", max="255", groups={"training"})
+     */
+    private ?string $streetName = null;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\NotBlank(groups={"training"})
+     * @Assert\Length(min="3", max="255", groups={"training"})
      */
     private ?string $country = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\NotBlank(groups={"training"})
+     * @Assert\Length(min="3", max="255", groups={"training"})
      */
     private ?string $city = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity=CenterType::class, inversedBy="trainingStructures")
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\Column(type="string", length=5, nullable=true)
+     * @Assert\NotBlank(groups={"training"})
+     * @Assert\Length(min="5", max="5", groups={"training"})
      */
-    private ?CenterType $type = null;
+    private ?string $zipCode = null;
 
     /**
-     * @ORM\OneToMany(targetEntity=GreenSpace::class, mappedBy="trainingStructure", orphanRemoval=true)
+     * @ORM\ManyToOne(targetEntity=CenterType::class, inversedBy="trainingCenters")
+     * @ORM\JoinColumn(nullable=true)
+     * @Assert\NotBlank(message="This value should not be blank. You must create a Center Type first", groups={"training"})
+     */
+    private ?CenterType $centerType = null;
+
+    /**
+     * @ORM\OneToMany(targetEntity=GreenSpace::class, mappedBy="trainingCenter", orphanRemoval=true)
      */
     private Collection $greenSpaces;
 
@@ -54,29 +78,63 @@ class TrainingCenter extends User
 
     public function __toString(): string
     {
-        return $this->getName();
+        return $this->getCompanyName();
     }
 
-    public function getName(): ?string
+    public function getType(): string
     {
-        return $this->name;
+        return parent::TYPE_TRAINING_CENTER;
     }
 
-    public function setName(string $name): self
+    public function hasCompany(): ?bool
     {
-        $this->name = $name;
+        return $this->companyName != null;
+    }
+
+    public function getCompanyName(): ?string
+    {
+        return $this->companyName;
+    }
+
+    public function setCompanyName(string $companyName): self
+    {
+        $this->companyName = $companyName;
 
         return $this;
     }
 
-    public function getAddress(): ?string
+    public function getZipCode(): ?string
     {
-        return $this->address;
+        return $this->zipCode;
     }
 
-    public function setAddress(string $address): self
+    public function setZipCode(string $zipCode): self
     {
-        $this->address = $address;
+        $this->zipCode = $zipCode;
+
+        return $this;
+    }
+
+    public function getStreetNumber(): ?int
+    {
+        return $this->streetNumber;
+    }
+
+    public function setStreetNumber(?int $streetNumber): self
+    {
+        $this->streetNumber = $streetNumber;
+
+        return $this;
+    }
+
+    public function getStreetName(): ?string
+    {
+        return $this->streetName;
+    }
+
+    public function setStreetName(?string $streetName): self
+    {
+        $this->streetName = $streetName;
 
         return $this;
     }
@@ -105,14 +163,19 @@ class TrainingCenter extends User
         return $this;
     }
 
-    public function getType(): ?CenterType
+    public function getAddress(): string
     {
-        return $this->type;
+        return $this->streetNumber . ' ' . $this->streetName . ', ' . $this->zipCode . ' ' . $this->city . '(' . $this->country . ')';
     }
 
-    public function setType(?CenterType $type): self
+    public function getCenterType(): ?CenterType
     {
-        $this->type = $type;
+        return $this->centerType;
+    }
+
+    public function setCenterType(?CenterType $type): self
+    {
+        $this->centerType = $type;
 
         return $this;
     }
@@ -129,7 +192,7 @@ class TrainingCenter extends User
     {
         if (!$this->greenSpaces->contains($greenSpace)) {
             $this->greenSpaces[] = $greenSpace;
-            $greenSpace->setTrainingStructure($this);
+            $greenSpace->setTrainingCenter($this);
         }
 
         return $this;
@@ -140,8 +203,8 @@ class TrainingCenter extends User
         if ($this->greenSpaces->contains($greenSpace)) {
             $this->greenSpaces->removeElement($greenSpace);
             // set the owning side to null (unless already changed)
-            if ($greenSpace->getTrainingStructure() === $this) {
-                $greenSpace->setTrainingStructure(null);
+            if ($greenSpace->getTrainingcenter() === $this) {
+                $greenSpace->setTrainingCenter(null);
             }
         }
 

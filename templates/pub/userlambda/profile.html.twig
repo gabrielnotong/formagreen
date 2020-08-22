@@ -1,0 +1,30 @@
+{% extends 'pub/base.html.twig' %}
+
+{% block title %}Edit profile{% endblock %}
+
+{% block body %}
+    <div class="container">
+        {{ form_start(form) }}
+        <div class="card rounded-0">
+            <h1 class="card-header font-weight-bold text-center text-primary">Profile edition</h1>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="alert alert-light rounded-0">
+                            {{ form_row(form.firstName) }}
+                            {{ form_row(form.lastName) }}
+                            {{ form_row(form.email) }}
+                            {{ form_row(form.phoneNumber) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-muted">
+                <button type="submit" class="btn btn-success float-right">
+                    <i class="fas fa-save mr-1"></i>Save
+                </button>
+            </div>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

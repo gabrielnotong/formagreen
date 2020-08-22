@@ -16,7 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity()
  * @ORM\Table(name="user_member")
  * @ORM\InheritanceType("SINGLE_TABLE")
- * @ORM\DiscriminatorColumn(name="discr", type="string")
+ * @ORM\DiscriminatorColumn(name="type", type="string")
  * @ORM\DiscriminatorMap({"user_lambda" = "App\Entity\UserLambda", "training_center" = "App\Entity\TrainingCenter"})
  * @ORM\HasLifecycleCallbacks
  * @UniqueEntity(
@@ -26,6 +26,15 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 abstract class User implements UserInterface
 {
+    const TYPE_USER_LAMBDA = 'user_lambda';
+    const TYPE_TRAINING_CENTER = 'training_center';
+    const ADD_MONTHS = "+%d months";
+    const NUMBER_OF_MONTHS = [
+       3 => 3,
+       6 => 6,
+       12 => 12
+    ];
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -35,8 +44,8 @@ abstract class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(message="Email is mandatory")
-     * @Assert\Email()
+     * @Assert\NotBlank(message="Email is mandatory", groups={"training", "userLambda"})
+     * @Assert\Email(groups={"training", "userLambda"})
      */
     private ?string $email = null;
 
@@ -49,7 +58,8 @@ abstract class User implements UserInterface
      * @var string|null
      * @Assert\EqualTo(
      *     propertyPath="hash",
-     *     message="The two passwords are not the same !"
+     *     message="The two passwords are not the same !",
+     *     groups={"training", "userLambda"}
      * )
      */
     public ?string $passwordConfirm = null;
@@ -72,11 +82,14 @@ abstract class User implements UserInterface
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @Assert\NotBlank
      */
     private ?string $qrCode = null;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=14, nullable=true)
+     * @Assert\NotBlank
+     * @Assert\Length(min="10", max="14")
      */
     private ?string $phoneNumber = null;
 
@@ -102,6 +115,8 @@ abstract class User implements UserInterface
     {
         return $this->id;
     }
+
+    abstract public function getType(): string;
 
     public function getEmail(): ?string
     {

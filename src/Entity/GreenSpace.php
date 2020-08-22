@@ -45,7 +45,7 @@ class GreenSpace
      * @ORM\ManyToOne(targetEntity=TrainingCenter::class, inversedBy="greenSpaces")
      * @ORM\JoinColumn(nullable=false)
      */
-    private ?User $trainingStructure = null;
+    private ?User $trainingCenter = null;
 
     public function __construct()
     {
@@ -124,14 +124,14 @@ class GreenSpace
         return $this;
     }
 
-    public function getTrainingStructure(): ?User
+    public function getTrainingCenter(): ?User
     {
-        return $this->trainingStructure;
+        return $this->trainingCenter;
     }
 
-    public function setTrainingStructure(?User $trainingStructure): self
+    public function setTrainingCenter(?User $trainingCenter): self
     {
-        $this->trainingStructure = $trainingStructure;
+        $this->trainingCenter = $trainingCenter;
 
         return $this;
     }
