@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\PasswordReset;
-use App\Entity\UserLambda;
 use App\Form\PasswordResetType;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -59,7 +58,6 @@ class AccountController extends AbstractController
         $form = $this->createForm(PasswordResetType::class, $passwordReset);
         $form->handleRequest($request);
 
-        /** @var UserLambda $user */
         $user = $this->getUser();
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -82,17 +80,6 @@ class AccountController extends AbstractController
 
         return $this->render('pub/account/password.html.twig', [
             'form' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * @Route("/account/me", name="account_me")
-     * @IsGranted("ROLE_USER")
-     */
-    public function me(): Response
-    {
-        return $this->render('pub/member/show.html.twig', [
-            'user' => $this->getUser(),
         ]);
     }
 }

@@ -3,64 +3,33 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\Role;
 use App\Entity\TrainingCenter;
-use App\Entity\UserLambda;
+use App\Event\TrainingCenterRegisterEvent;
+use App\Form\TrainingCenterProfileType;
 use App\Form\TrainingCenterRegisterType;
-use App\Repository\RoleRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Endroid\QrCode\Factory\QrCodeFactoryInterface;
+use Exception;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class TrainingCenterController extends AbstractController
 {
     /**
-     * @Route("/training/register", name="training_account_register")
+     * @Route("/training/register", name="training_center_register")
+     * @throws Exception
      */
-    public function register(
-        Request $request,
-        EntityManagerInterface $manager,
-        UserPasswordEncoderInterface $encoder,
-        QrCodeFactoryInterface $qrCodeFactory,
-        RoleRepository $roleRepository
-    ): Response {
+    public function register(Request $request, EventDispatcherInterface $eventDispatcher): Response {
         $tc = new TrainingCenter();
 
         $form = $this->createForm(TrainingCenterRegisterType::class, $tc);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // todo: use listeners to manage password, registration period and qrcode
-            $password = $encoder->encodePassword($tc, $tc->getHash());
-            $role = $roleRepository->findOneBy(['name' => 'ROLE_MEMBER']);
-
-            $tc->setHash($password)
-                ->setStartsAt(new \DateTime())
-                ->setEndsAt(new \DateTime(sprintf(UserLambda::ADD_MONTHS, $tc->getNumberOfMonths())))
-                ->addUserRole($role)
-            ;
-
-            $qrCode = $qrCodeFactory->create(sprintf(
-                TrainingCenter::QRCODE_CONTENT,
-                $tc->getName(),
-                $tc->getEmail(),
-                $tc->getStartsAt()->format('Y-m-d'),
-                $tc->getEndsAt()->format('Y-m-d'),
-                $tc->getAddress(),
-                $tc->getCountry(),
-                $tc->getCity(),
-                $tc->getPhoneNumber()
-            ));
-
-            $tc->setQrCode($qrCode->getText());
-
-            $manager->persist($tc);
-            $manager->flush();
+            $eventDispatcher->dispatch(new TrainingCenterRegisterEvent($tc));
 
             $this->addFlash(
                 'success',
@@ -70,20 +39,20 @@ class TrainingCenterController extends AbstractController
             return $this->redirectToRoute('account_login');
         }
 
-        return $this->render('pub/account/registration_training_center.html.twig', [
+        return $this->render('pub/training/registration.html.twig', [
             'form' => $form->createView(),
         ]);
     }
 
     /**
-     * @Route("/training/profile", name="training_account_profile")
+     * @Route("/training/profile", name="training_center_profile")
      * @IsGranted("ROLE_USER")
      */
     public function profile(Request $request, EntityManagerInterface $manager): Response
     {
         $user = $this->getUser();
 
-        $form = $this->createForm(TrainingCenterRegisterType::class, $user);
+        $form = $this->createForm(TrainingCenterProfileType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -96,8 +65,20 @@ class TrainingCenterController extends AbstractController
             );
         }
 
-        return $this->render('pub/account/profile_training_center.html.twig', [
+        return $this->render('pub/training/profile.html.twig', [
             'form' => $form->createView(),
+        ]);
+    }
+
+
+    /**
+     * @Route("/training/me", name="training_center_me")
+     * @IsGranted("ROLE_USER")
+     */
+    public function me(): Response
+    {
+        return $this->render('pub/training/show.html.twig', [
+            'member' => $this->getUser(),
         ]);
     }
 }

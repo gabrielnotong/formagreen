@@ -10,7 +10,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=StructureTypeRepository::class)
+ * @ORM\Entity(repositoryClass=CenterTypeRepository::class)
  */
 class CenterType
 {
@@ -32,13 +32,13 @@ class CenterType
     private ?string $description = null;
 
     /**
-     * @ORM\OneToMany(targetEntity=TrainingCenter::class, mappedBy="type")
+     * @ORM\OneToMany(targetEntity=TrainingCenter::class, mappedBy="centerType")
      */
-    private Collection $trainingStructures;
+    private Collection $trainingCenters;
 
     public function __construct()
     {
-        $this->trainingStructures = new ArrayCollection();
+        $this->trainingCenters = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -73,28 +73,28 @@ class CenterType
     /**
      * @return Collection|TrainingCenter[]
      */
-    public function getTrainingStructures(): Collection
+    public function getTrainingCenters(): Collection
     {
-        return $this->trainingStructures;
+        return $this->trainingCenters;
     }
 
-    public function addTrainingStructure(TrainingCenter $trainingStructure): self
+    public function addTrainingCenter(TrainingCenter $trainingCenter): self
     {
-        if (!$this->trainingStructures->contains($trainingStructure)) {
-            $this->trainingStructures[] = $trainingStructure;
-            $trainingStructure->setType($this);
+        if (!$this->trainingCenters->contains($trainingCenter)) {
+            $this->trainingCenters[] = $trainingCenter;
+            $trainingCenter->setCenterType($this);
         }
 
         return $this;
     }
 
-    public function removeTrainingStructure(TrainingCenter $trainingStructure): self
+    public function removeTrainingCenter(TrainingCenter $trainingCenter): self
     {
-        if ($this->trainingStructures->contains($trainingStructure)) {
-            $this->trainingStructures->removeElement($trainingStructure);
+        if ($this->trainingCenters->contains($trainingCenter)) {
+            $this->trainingCenters->removeElement($trainingCenter);
             // set the owning side to null (unless already changed)
-            if ($trainingStructure->getType() === $this) {
-                $trainingStructure->setType(null);
+            if ($trainingCenter->getCenterType() === $this) {
+                $trainingCenter->setCenterType(null);
             }
         }
 

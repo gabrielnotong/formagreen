@@ -16,7 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity()
  * @ORM\Table(name="user_member")
  * @ORM\InheritanceType("SINGLE_TABLE")
- * @ORM\DiscriminatorColumn(name="discr", type="string")
+ * @ORM\DiscriminatorColumn(name="type", type="string")
  * @ORM\DiscriminatorMap({"user_lambda" = "App\Entity\UserLambda", "training_center" = "App\Entity\TrainingCenter"})
  * @ORM\HasLifecycleCallbacks
  * @UniqueEntity(
@@ -26,6 +26,15 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 abstract class User implements UserInterface
 {
+    const TYPE_USER_LAMBDA = 'user_lambda';
+    const TYPE_TRAINING_CENTER = 'training_center';
+    const ADD_MONTHS = "+%d months";
+    const NUMBER_OF_MONTHS = [
+       3 => 3,
+       6 => 6,
+       12 => 12
+    ];
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -102,6 +111,8 @@ abstract class User implements UserInterface
     {
         return $this->id;
     }
+
+    abstract public function getType(): string;
 
     public function getEmail(): ?string
     {

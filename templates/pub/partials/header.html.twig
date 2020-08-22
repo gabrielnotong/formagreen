@@ -27,7 +27,7 @@
                             Create an Ad
                         </a>
                         <div class="dropdown-divider"></div>
-                        <a href="{{ path('account_me') }}" class="dropdown-item">
+                        <a href="{{ path( u.getType() ~ '_me') }}" class="dropdown-item">
                             My Profile
                         </a>
                         <a href="{#{{ path('account_bookings') }}#}" class="dropdown-item">My Bookings</a>
@@ -43,11 +43,11 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-right rounded-0 border-top-0"
                          aria-labelledby="accountDropdownLink">
-                        <a href="{{ path('account_register') }}" class="dropdown-item text-primary">
+                        <a href="{{ path('user_lambda_register') }}" class="dropdown-item text-primary">
                             You are particular
                         </a>
                         <div class="dropdown-divider"></div>
-                        <a href="{{ path('training_account_register') }}" class="dropdown-item text-warning">
+                        <a href="{{ path('training_center_register') }}" class="dropdown-item text-warning">
                             You are a company
                         </a>
                     </div>

@@ -15,6 +15,7 @@ use App\Entity\UserLambda;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Exception;
 use Faker\Factory;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
@@ -27,6 +28,9 @@ class AppFixtures extends Fixture
         $this->encoder = $encoder;
     }
 
+    /**
+     * @throws Exception
+     */
     public function load(ObjectManager $manager): void 
     {
         $faker = Factory::create();
@@ -56,11 +60,6 @@ class AppFixtures extends Fixture
             $user = new UserLambda();
 
             $gender = $faker->randomElement($genders);
-
-            $picture = 'https://randomuser.me/api/portraits/';
-            $pictureId = $faker->numberBetween(1, 99) . '.jpg';
-
-            $picture .= ($gender == 'male' ? 'men/' : 'women/') . $pictureId;
 
             $hash = $this->encoder->encodePassword($user, 'password');
 
@@ -111,7 +110,7 @@ class AppFixtures extends Fixture
         }
 
         // Manage fake training structures type
-        $types = ['School', 'University', 'Center', 'Parc'];
+        $types = ['School', 'University', 'Company', 'Parc'];
         $structureTypes = [];
         for ($i = 0; $i <= 3; $i++) {
             $structureType = (new CenterType())
@@ -124,20 +123,22 @@ class AppFixtures extends Fixture
         }
 
         // Manage fake training structures
-        $trainingStructures = [];
+        $trainingCenters = [];
         for ($i = 0; $i <= 9; $i++) {
             $structure = new TrainingCenter();
             $structure
                 ->setEmail($faker->email)
                 ->setHash($this->encoder->encodePassword($structure, 'password'))
-                ->setName($faker->company)
-                ->setAddress($faker->address)
+                ->setCompanyName($faker->company)
+                ->setStreetNumber($faker->numberBetween(1, 255))
+                ->setStreetName($faker->streetName)
+                ->setZipCode($faker->postcode)
                 ->setCity($faker->city)
                 ->setCountry($faker->country)
-                ->setType($structureTypes[$faker->numberBetween(0, 3)])
+                ->setCenterType($structureTypes[$faker->numberBetween(0, 3)])
             ;
 
-            $trainingStructures[] = $structure;
+            $trainingCenters[] = $structure;
             $manager->persist($structure);
         }
 
@@ -149,7 +150,7 @@ class AppFixtures extends Fixture
                 ->setName($faker->city)
                 ->setLatitude($faker->latitude)
                 ->setLongitude($faker->longitude)
-                ->setTrainingStructure($trainingStructures[$faker->numberBetween(0, 9)])
+                ->setTrainingCenter($trainingCenters[$faker->numberBetween(0, 9)])
             ;
 
             $greenSpaces[] = $greenSpace;
