@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Discount;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -18,33 +21,8 @@ class DiscountRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Discount::class);
     }
-
-    // /**
-    //  * @return Discount[] Returns an array of Discount objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function findAllQuery(): Query
     {
-        return $this->createQueryBuilder('d')
-            ->andWhere('d.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('d.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        return $this->createQueryBuilder('d')->getQuery();
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Discount
-    {
-        return $this->createQueryBuilder('d')
-            ->andWhere('d.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

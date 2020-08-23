@@ -92,7 +92,11 @@ class AppFixtures extends Fixture
                 ->setName($faker->company)
                 ->setEmail($faker->companyEmail)
                 ->setPhoneNumber($faker->e164PhoneNumber)
-                ->setAddress($faker->address)
+                ->setStreetNumber($faker->numberBetween(1, 255))
+                ->setStreetName($faker->streetName)
+                ->setZipCode($faker->postcode)
+                ->setCity($faker->city)
+                ->setCountry($faker->country)
             ;
 
             $partners[] = $partner;

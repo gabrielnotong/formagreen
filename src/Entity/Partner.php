@@ -8,12 +8,15 @@ use App\Repository\PartnerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=PartnerRepository::class)
  */
 class Partner
 {
+    use AddressTrait;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -23,23 +26,32 @@ class Partner
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(groups={"partner"})
      */
     private ?string $name = null;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(groups={"partner"})
+     * @Assert\Email(groups={"partner"})
      */
-    private ?string $address = null;
+    private ?string $email = null;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(groups={"partner"})
      */
     private ?string $phoneNumber = null;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="boolean")
      */
-    private ?string $email = null;
+    private bool $status = true;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private bool $deleted = false;
 
     /**
      * @ORM\OneToMany(targetEntity=Discount::class, mappedBy="partner")
@@ -49,6 +61,11 @@ class Partner
     public function __construct()
     {
         $this->discounts = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return $this->name;
     }
 
     public function getId(): ?int
@@ -64,18 +81,6 @@ class Partner
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getAddress(): ?string
-    {
-        return $this->address;
-    }
-
-    public function setAddress(string $address): self
-    {
-        $this->address = $address;
 
         return $this;
     }
@@ -101,6 +106,33 @@ class Partner
     {
         $this->email = $email;
 
+        return $this;
+    }
+
+    public function getStatus(): bool
+    {
+        return $this->status;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->getStatus();
+    }
+
+    public function setStatus(bool $status): self
+    {
+        $this->status = $status;
+        return $this;
+    }
+
+    public function isDeleted(): bool
+    {
+        return $this->deleted;
+    }
+
+    public function setDeleted(bool $deleted): self
+    {
+        $this->deleted = $deleted;
         return $this;
     }
 
