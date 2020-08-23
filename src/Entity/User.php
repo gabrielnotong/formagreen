@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ORM\Table(name="user_member")
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="string")
@@ -102,6 +102,11 @@ abstract class User implements UserInterface
      * @ORM\Column(type="boolean")
      */
     private ?bool $status = true;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private ?bool $deleted = false;
 
     private ?int $numberOfMonths = null;
 
@@ -291,9 +296,26 @@ abstract class User implements UserInterface
         return $this->getStatus();
     }
 
+    public function getDeleted(): ?bool
+    {
+        return $this->deleted;
+    }
+
+    public function isDeleted(): ?bool
+    {
+        return $this->deleted;
+    }
+
     public function setStatus(bool $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function setDeleted(bool $deleted): self
+    {
+        $this->deleted = $deleted;
 
         return $this;
     }

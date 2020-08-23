@@ -11,6 +11,7 @@ use App\Entity\Prestation;
 use App\Entity\Role;
 use App\Entity\CenterType;
 use App\Entity\TrainingCenter;
+use App\Entity\User;
 use App\Entity\UserLambda;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -63,14 +64,14 @@ class AppFixtures extends Fixture
 
             $hash = $this->encoder->encodePassword($user, 'password');
 
-            $endDate = new DateTime('+' .($faker->numberBetween(6, 12)) .' months');
+            $endDate = new DateTime(sprintf(User::ADD_MONTHS,  $faker->numberBetween(6, 12)));
             $user->setFirstName($faker->firstName($gender))
                 ->setLastName($faker->lastName)
                 ->setEmail($faker->email)
                 ->setHash($hash)
                 ->addUserRole($roles[0])
                 ->setQrCode($faker->isbn13)
-                ->setPhoneNumber($faker->phoneNumber)
+                ->setPhoneNumber($faker->e164PhoneNumber)
                 ->setStartsAt($startDate)
                 ->setEndsAt($endDate)
             ;
@@ -96,7 +97,7 @@ class AppFixtures extends Fixture
         // Manage fake discounts
         $discounts = [];
         for ($i = 0; $i <= 9; $i++) {
-            $endDate = new DateTime('+' .($faker->numberBetween(1, 3)) .' months');
+            $endDate = new DateTime(sprintf(User::ADD_MONTHS,  $faker->numberBetween(1, 4)));
             $discount = (new Discount())
                 ->setPercentage($faker->numberBetween(2, 6))
                 ->setPartner($partners[$i])
@@ -126,6 +127,7 @@ class AppFixtures extends Fixture
         $trainingCenters = [];
         for ($i = 0; $i <= 9; $i++) {
             $structure = new TrainingCenter();
+            $endDate = new DateTime(sprintf(User::ADD_MONTHS,  $faker->numberBetween(1, 4)));
             $structure
                 ->setEmail($faker->email)
                 ->setHash($this->encoder->encodePassword($structure, 'password'))
@@ -135,6 +137,9 @@ class AppFixtures extends Fixture
                 ->setZipCode($faker->postcode)
                 ->setCity($faker->city)
                 ->setCountry($faker->country)
+                ->setStartsAt($startDate)
+                ->setEndsAt($endDate)
+                ->setPhoneNumber($faker->e164PhoneNumber)
                 ->setCenterType($structureTypes[$faker->numberBetween(0, 3)])
             ;
 
@@ -160,7 +165,7 @@ class AppFixtures extends Fixture
         // Manage fake prestations
         $greenSpaceTypes = ['Maintenance', 'Installation'];
         for ($i = 0; $i <= 9; $i++) {
-            $endDate = new DateTime('+' .($faker->numberBetween(1, 4)) .' weeks');
+            $endDate = new DateTime(sprintf(User::ADD_MONTHS,  $faker->numberBetween(1, 4)));
             $prestation = (new Prestation())
                 ->setStartsAt($startDate)
                 ->setEndsAt($endDate)

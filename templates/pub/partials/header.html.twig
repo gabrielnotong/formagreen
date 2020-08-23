@@ -10,9 +10,6 @@
             <li class="nav-itemannouncements">
                 <a class="nav-link" href="{{ path('homepage') }}">Home</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" {#href="{{ path('ads_list') }}"#}>Advertisements</a>
-            </li>
         </ul>
         <ul class="navbar-nav ml-auto">
             {% if app.user %}
@@ -23,14 +20,10 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-right rounded-0 border-top-0"
                          aria-labelledby="accountDropdownLink">
-                        <a {#href="{{ path('ads_create') }}"#} class="dropdown-item">
-                            Create an Ad
-                        </a>
                         <div class="dropdown-divider"></div>
                         <a href="{{ path( u.getType() ~ '_me') }}" class="dropdown-item">
                             My Profile
                         </a>
-                        <a href="{#{{ path('account_bookings') }}#}" class="dropdown-item">My Bookings</a>
                         <a href="{{ path('account_password') }}" class="dropdown-item">Change my password</a>
                         <div class="dropdown-divider"></div>
                         <a href="{{ path('account_logout') }}" class="dropdown-item">Logout</a>

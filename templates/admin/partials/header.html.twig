@@ -1,5 +1,5 @@
 <nav class="navbar navbar-dark navbar-expand-lg bg-primary">
-    <a class="navbar-brand text-success font-weight-bold fa-2x" href="{{ path('homepage') }}">Forma-Green</a>
+    <a class="navbar-brand text-white font-weight-bold fa-2x" href="{{ path('homepage') }}">Forma-Green</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor03"
             aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -14,29 +14,29 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ path('admin_ads_index') }}">
+                <a class="nav-link" href="{{ path('admin_trainings_index') }}">
                     <i class="fas fa-hotel"></i>
-                    Announces
+                    Training centers
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ path('admin_bookings_index') }}">
-                    <i class="fas fa-folder"></i>
-                    Bookings
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ path('admin_comments_index') }}">
-                    <i class="fas fa-comments"></i>
-                    Comments
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="{{ path('admin_users_index') }}">
                     <i class="fas fa-users"></i>
                     Users
                 </a>
             </li>
+{#            <li class="nav-item">#}
+{#                <a class="nav-link" href="{{ path('admin_comments_index') }}">#}
+{#                    <i class="fas fa-comments"></i>#}
+{#                    Comments#}
+{#                </a>#}
+{#            </li>#}
+{#            <li class="nav-item">#}
+{#                <a class="nav-link" href="#">#}
+{#                    <i class="fas fa-users"></i>#}
+{#                    Users#}
+{#                </a>#}
+{#            </li>#}
         </ul>
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
@@ -50,8 +50,7 @@
                 {% set u = app.user %}
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" id="accountDropdownLink">
-                        <img src="{{ u.picture }}" class="avatar avatar-mini" alt="{{ u }}">
-                        {{ u }}
+                        <i class="fa fa-user-secret text-white"></i>&nbsp;{{ u }}
                     </a>
                     <div class="dropdown-menu dropdown-menu-right rounded-0 border-top-0"
                          aria-labelledby="accountDropdownLink">
