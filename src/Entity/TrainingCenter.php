@@ -52,9 +52,9 @@ class TrainingCenter extends User
     private ?string $city = null;
 
     /**
-     * @ORM\Column(type="string", length=5, nullable=true)
+     * @ORM\Column(type="string", length=15, nullable=true)
      * @Assert\NotBlank(groups={"training"})
-     * @Assert\Length(min="5", max="5", groups={"training"})
+     * @Assert\Length(min="5", max="15", groups={"training"})
      */
     private ?string $zipCode = null;
 

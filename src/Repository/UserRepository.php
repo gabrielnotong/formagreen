@@ -5,6 +5,8 @@ namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -20,19 +22,19 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
-    /**
-     * @return array<int, User>
-     */
-    public function findBestUsers(int $limit = 2): ?array
+    public function findAllTrainingCenters(): Query
+    {
+        return $this->findVisibleQueryBuilder()->andWhere('u INSTANCE OF App\Entity\TrainingCenter')->getQuery();
+    }
+
+    public function findAllUsersLambda(): Query
+    {
+        return $this->findVisibleQueryBuilder()->andWhere('u INSTANCE OF App\Entity\UserLambda')->getQuery();
+    }
+
+    private function findVisibleQueryBuilder(): QueryBuilder
     {
         return $this->createQueryBuilder('u')
-            ->join('u.ads', 'a')
-            ->join('a.comments', 'c')
-            ->select('AVG(c.rating) as avgRating, u as user')
-            ->groupBy('u')
-            ->orderBy('avgRating', 'DESC')
-            ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult();
+            ->where('u.deleted = 0');
     }
 }
