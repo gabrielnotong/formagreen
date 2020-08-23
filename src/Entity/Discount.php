@@ -9,6 +9,7 @@ use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=DiscountRepository::class)
@@ -24,12 +25,22 @@ class Discount
 
     /**
      * @ORM\Column(type="decimal", precision=3, scale=2)
+     * @Assert\NotBlank
+     * @Assert\Type("float", message="must be a decimal")
      */
     private ?float $percentage = null;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\NotBlank
+     * @Assert\Length(min="3", max="255")
+     */
+    private ?string $description = null;
+
+    /**
      * @ORM\ManyToOne(targetEntity=Partner::class, inversedBy="discounts")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotBlank(message="This value should not be blank. First of all, create a partner.")
      */
     private ?Partner $partner = null;
 
@@ -39,17 +50,18 @@ class Discount
     private Collection $prestations;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private ?string $description = null;
-
-    /**
      * @ORM\Column(type="datetime")
+     * @Assert\Type("\DateTimeInterface", message="Incorrect date format: waiting for yyyy/mm/dd")
      */
     private ?DateTimeInterface $startsAt = null;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Assert\Type("\DateTimeInterface", message="Incorrect date format: waiting for yyyy/mm/dd")
+     * @Assert\GreaterThan(
+     *     propertyPath="startsAt",
+     *     message="The end date must come after the start date"
+     * )
      */
     private ?DateTimeInterface $endsAt = null;
 

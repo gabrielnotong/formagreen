@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class AdminUserLambdaController extends AbstractController
 {
     /**
-     * @Route("admin/users/{page<\d+>?1}", name="admin_users_index")
+     * @Route("/admin/users/{page<\d+>?1}", name="admin_users_index")
      */
     public function index(int $page, UserRepository $repository, Paginator $paginator): Response
     {

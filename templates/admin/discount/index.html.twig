@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Discounts list{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="my-5 text-primary font-weight-bold">Discounts management</h1>
+
+        <a href="{{ path('admin_discounts_create') }}" type="button" class="btn btn-primary mb-1">
+            <i class="fa fa-plus mr-1"></i> Add
+        </a>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Partner</th>
+                <th>Percentage</th>
+                <th>Description</th>
+                <th>From</th>
+                <th>To</th>
+                <th class="text-right">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for discount in paginator.data %}
+                <tr>
+                    <td>{{ discount.id }}</td>
+                    <td>{{ discount.partner }}</td>
+                    <td>{{ discount.percentage | badge({'color': 'dark'}) }}</td>
+                    <td>{{ discount.description }}</td>
+                    <td>{{ discount.startsAt | date('Y-m-d') }}</td>
+                    <td>{{ discount.endsAt | date('Y-m-d') }}</td>
+                    <td class="actions text-right">
+                        <a href="{{ path('admin_discounts_edit', {id: discount.id}) }}" class="btn btn-success btn-sm mr-1">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                        <form action="{{ path('admin_discounts_delete', {id: discount.id}) }}"
+                              method="POST"
+                              class="d-inline-block"
+                              onclick="return confirm('Do you really want to delete this discount ?')">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ discount.id) }}">
+                            <button class="btn btn-danger btn-sm"
+                                    type="submit"
+                                    title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        {{ paginator.render() }}
+    </div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit discount{% endblock %}
+
+{% block body %}
+    <div class="container">
+        {{ form_start(form) }}
+        <div class="card rounded-0">
+            <h1 class="card-header font-weight-bold text-center text-primary">Edit discount</h1>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="alert alert-light rounded-0">
+                            <h2 class="alert-heading">General information</h2>
+                            <hr>
+                            {{ form_row(form.percentage) }}
+                            {{ form_row(form.description) }}
+                            {{ form_row(form.partner) }}
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="alert alert-light rounded-0">
+                            <h2 class="alert-heading">Validity period</h2>
+                            <hr>
+                            {{ form_row(form.startsAt) }}
+                            {{ form_row(form.endsAt) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-muted rounded-0">
+                <button type="submit" class="btn btn-success float-right">
+                    <i class="fas fa-upload mr-1"></i>Update
+                </button>
+            </div>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function () {
+            $('#discount_startsAt, #discount_endsAt').datepicker({
+                format: 'yyyy/mm/dd',
+                startDate: new Date(),
+            });
+        })
+    </script>
+{% endblock %}

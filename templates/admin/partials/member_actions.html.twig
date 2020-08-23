@@ -7,7 +7,7 @@
           onclick="return confirm('Do you really want to {{ isActive ? 'disable' : 'enable' }} this training center ?')">
         <input type="hidden" name="_method" value="PATCH">
         <input type="hidden" name="_token" value="{{ csrf_token('disable' ~ member.id) }}">
-        <button class="btn btn-light"
+        <button class="btn btn-light btn-sm"
                 type="submit"
                 title="{{ isActive ? 'Clic to disable' : 'Clic to enable' }}">
             <i class="fas {{ isActive ? 'fa-toggle-on text-success' : 'fa-toggle-off text-danger' }}"></i>
@@ -20,7 +20,7 @@
           onclick="return confirm('Do you really want to delete this training center ?')">
         <input type="hidden" name="_method" value="DELETE">
         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ member.id) }}">
-        <button class="btn btn-light"
+        <button class="btn btn-light btn-sm"
                 type="submit"
                 title="Delete">
             <i class="fas fa-trash text-danger"></i>

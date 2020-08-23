@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Add partner{% endblock %}
+
+{% block body %}
+    <div class="container">
+        {{ form_start(form) }}
+        <div class="card rounded-0">
+            <h1 class="card-header font-weight-bold text-center text-primary">Create new partner</h1>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="alert alert-light rounded-0">
+                            <h2 class="alert-heading">General information</h2>
+                            <hr>
+                            {{ form_row(form.name) }}
+                            {{ form_row(form.email) }}
+                            {{ form_row(form.phoneNumber) }}
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="alert alert-light rounded-0">
+                            <h2 class="alert-heading">Address</h2>
+                            <hr>
+                            {{ form_row(form.streetNumber) }}
+                            {{ form_row(form.streetName) }}
+                            {{ form_row(form.zipCode) }}
+                            {{ form_row(form.city) }}
+                            {{ form_row(form.country) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-muted rounded-0">
+                <button type="submit" class="btn btn-success float-right">
+                    <i class="fas fa-save mr-1"></i>Register
+                </button>
+            </div>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

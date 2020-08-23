@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\Partner;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,32 +21,14 @@ class PartnerRepository extends ServiceEntityRepository
         parent::__construct($registry, Partner::class);
     }
 
-    // /**
-    //  * @return Partner[] Returns an array of Partner objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function findAllAvailable(): Query
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        return $this->findVisibleQueryBuilder()->getQuery();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Partner
+    private function findVisibleQueryBuilder(): QueryBuilder
     {
         return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->where('p.deleted = 0');
     }
-    */
 }

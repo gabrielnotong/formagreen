@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class AdminTrainingCenterController extends AbstractController
 {
     /**
-     * @Route("admin/trainings/{page<\d+>?1}", name="admin_trainings_index")
+     * @Route("/admin/trainings/{page<\d+>?1}", name="admin_trainings_index")
      */
     public function index(int $page, UserRepository $repository, Paginator $paginator): Response
     {
