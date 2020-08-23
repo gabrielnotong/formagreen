@@ -13,6 +13,7 @@ use App\Entity\CenterType;
 use App\Entity\TrainingCenter;
 use App\Entity\User;
 use App\Entity\UserLambda;
+use App\Service\QRCodeGenerator;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -23,10 +24,12 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class AppFixtures extends Fixture
 {
     private UserPasswordEncoderInterface $encoder;
+    private QRCodeGenerator $qrCodeGenerator;
 
-    public function __construct(UserPasswordEncoderInterface $encoder)
+    public function __construct(UserPasswordEncoderInterface $encoder, QRCodeGenerator $qrCodeGenerator)
     {
         $this->encoder = $encoder;
+        $this->qrCodeGenerator = $qrCodeGenerator;
     }
 
     /**
@@ -70,11 +73,13 @@ class AppFixtures extends Fixture
                 ->setEmail($faker->email)
                 ->setHash($hash)
                 ->addUserRole($roles[0])
-                ->setQrCode($faker->isbn13)
                 ->setPhoneNumber($faker->e164PhoneNumber)
                 ->setStartsAt($startDate)
                 ->setEndsAt($endDate)
             ;
+
+            $qrCode = $this->qrCodeGenerator->forUserLambda($user);
+            $user->setQrCode($qrCode);
 
             $manager->persist($user);
             $users[] = $user;
@@ -112,25 +117,25 @@ class AppFixtures extends Fixture
 
         // Manage fake training structures type
         $types = ['School', 'University', 'Company', 'Parc'];
-        $structureTypes = [];
+        $tcTypes = [];
         for ($i = 0; $i <= 3; $i++) {
-            $structureType = (new CenterType())
+            $tcType = (new CenterType())
                 ->setName($types[$i])
                 ->setDescription($types[$i] . ' ' . $faker->city)
             ;
 
-            $structureTypes[] = $structureType;
-            $manager->persist($structureType);
+            $tcTypes[] = $tcType;
+            $manager->persist($tcType);
         }
 
         // Manage fake training structures
         $trainingCenters = [];
         for ($i = 0; $i <= 9; $i++) {
-            $structure = new TrainingCenter();
+            $tc = new TrainingCenter();
             $endDate = new DateTime(sprintf(User::ADD_MONTHS,  $faker->numberBetween(1, 4)));
-            $structure
+            $tc
                 ->setEmail($faker->email)
-                ->setHash($this->encoder->encodePassword($structure, 'password'))
+                ->setHash($this->encoder->encodePassword($tc, 'password'))
                 ->setCompanyName($faker->company)
                 ->setStreetNumber($faker->numberBetween(1, 255))
                 ->setStreetName($faker->streetName)
@@ -140,11 +145,13 @@ class AppFixtures extends Fixture
                 ->setStartsAt($startDate)
                 ->setEndsAt($endDate)
                 ->setPhoneNumber($faker->e164PhoneNumber)
-                ->setCenterType($structureTypes[$faker->numberBetween(0, 3)])
+                ->setCenterType($tcTypes[$faker->numberBetween(0, 3)])
             ;
+            $qrCode = $this->qrCodeGenerator->forTrainingCenter($tc);
+            $tc->setQrCode($qrCode);
 
-            $trainingCenters[] = $structure;
-            $manager->persist($structure);
+            $trainingCenters[] = $tc;
+            $manager->persist($tc);
         }
 
 
