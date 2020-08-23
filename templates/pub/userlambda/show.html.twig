@@ -1,4 +1,4 @@
-{% extends 'pub/base.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}My profile!{% endblock %}
 
@@ -13,7 +13,7 @@
                         <p class="mt-3">
                             <strong>{{ member }}</strong>
                             <br>
-                            <i class="fa {{ member.isActive ? 'fa-toggle-on text-success' : 'fa-toggle-off text-danger'  }} fa-2x"></i>
+                            <i class="fa {{ member.isActive ? 'fa-toggle-on text-success' : 'fa-toggle-off text-danger' }} fa-2x"></i>
                         </p>
                     </div>
                     <div class="col-9">
@@ -35,22 +35,26 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col">
-                                <div class="alert alert-light rounded-0">
-                                    <h6 class="alert-heading text-primary">QRCode Identification</h6>
-                                    <hr>
-                                    <img class="text-center" src="{{ qr_code_data_uri(member.qrCode, { writer: 'svg', size: 150 }) }}" />
+                        {% if member.qrCode %}
+                            <div class="row">
+                                <div class="col">
+                                    <div class="alert alert-light rounded-0">
+                                        <h6 class="alert-heading text-primary">QRCode Identification</h6>
+                                        <hr>
+                                        <img class="text-center"
+                                             src="{{ qr_code_data_uri(member.qrCode, { writer: 'svg', size: 150 }) }}"/>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
             <div class="card-footer text-muted">
                 {% if member is same as(app.user) %}
                     <div class="mt-3">
-                        <a href="{{ path('user_lambda_profile') }}" class="btn btn-success mb-2 mr-2">Edit my profile</a>
+                        <a href="{{ path('user_lambda_profile') }}" class="btn btn-success mb-2 mr-2">Edit my
+                            profile</a>
                         <a href="{{ path('account_password') }}" class="btn btn-primary mb-2">Change my password</a>
                     </div>
                 {% endif %}
