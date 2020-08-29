@@ -8,12 +8,15 @@ use App\Repository\GreenSpaceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=GreenSpaceRepository::class)
  */
 class GreenSpace
 {
+    use AddressTrait;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -23,29 +26,35 @@ class GreenSpace
 
     /**
      * @ORM\Column(type="decimal", precision=8, scale=6)
+     * @Assert\NotBlank
+     * @Assert\Regex(pattern="/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?)$/", message="Invalid Latitude.")
      */
     private ?float $latitude = null;
 
     /**
      * @ORM\Column(type="decimal", precision=9, scale=6)
+     * @Assert\NotBlank
+     * @Assert\Regex(pattern="/^[-]?((((1[0-7][0-9])|([0-9]?[0-9]))\.(\d+))|180(\.0+)?)$/", message="Invalid Longitude.")
      */
     private ?float $longitude = null;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
      */
     private ?string $name = null;
 
     /**
-     * @ORM\OneToMany(targetEntity=Prestation::class, mappedBy="greenSpace")
+     * @ORM\OneToMany(targetEntity=Prestation::class, mappedBy="greenSpace", cascade={"remove"})
      */
     private Collection $prestations;
 
     /**
      * @ORM\ManyToOne(targetEntity=TrainingCenter::class, inversedBy="greenSpaces")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotBlank(message="This value should not be blank. First of all, create a training center.")
      */
-    private ?User $trainingCenter = null;
+    private ?TrainingCenter $trainingCenter = null;
 
     public function __construct()
     {
@@ -57,7 +66,7 @@ class GreenSpace
         return $this->id;
     }
 
-    public function getLatitude(): ?string
+    public function getLatitude(): ?float
     {
         return $this->latitude;
     }
@@ -69,7 +78,7 @@ class GreenSpace
         return $this;
     }
 
-    public function getLongitude(): ?string
+    public function getLongitude(): ?float
     {
         return $this->longitude;
     }
@@ -124,12 +133,12 @@ class GreenSpace
         return $this;
     }
 
-    public function getTrainingCenter(): ?User
+    public function getTrainingCenter(): ?TrainingCenter
     {
         return $this->trainingCenter;
     }
 
-    public function setTrainingCenter(?User $trainingCenter): self
+    public function setTrainingCenter(?TrainingCenter $trainingCenter): self
     {
         $this->trainingCenter = $trainingCenter;
 

@@ -164,6 +164,11 @@ class AppFixtures extends Fixture
         for ($i = 0; $i <= 9; $i++) {
             $greenSpace = (new GreenSpace())
                 ->setName($faker->city)
+                ->setStreetNumber($faker->numberBetween(1, 255))
+                ->setStreetName($faker->streetName)
+                ->setZipCode($faker->postcode)
+                ->setCity($faker->city)
+                ->setCountry($faker->country)
                 ->setLatitude($faker->latitude)
                 ->setLongitude($faker->longitude)
                 ->setTrainingCenter($trainingCenters[$faker->numberBetween(0, 9)])

@@ -101,6 +101,6 @@ trait AddressTrait
 
     public function getAddress(): string
     {
-        return $this->streetNumber . ' ' . $this->streetName . ', ' . $this->zipCode . ' ' . $this->city . '(' . $this->country . ')';
+        return $this->streetNumber . ' ' . $this->streetName . ', ' . $this->zipCode . ' ' . $this->city;
     }
 }

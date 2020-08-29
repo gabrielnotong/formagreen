@@ -7,10 +7,13 @@ RUN apt-get update && \
     zlib1g-dev \
     libxml2-dev \
     libzip-dev \
+    libpng-dev \
     g++
 RUN docker-php-ext-configure intl && \
     docker-php-ext-install zip intl && \
-    docker-php-ext-enable apcu
+    docker-php-ext-enable apcu && \
+    docker-php-ext-configure gd && \
+    docker-php-ext-install gd
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
