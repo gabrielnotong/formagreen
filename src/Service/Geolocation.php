@@ -25,14 +25,14 @@ class Geolocation
                 $greenSpace->getAddress(),
                 $this->googleApiKey
             ));
+
+            $lat  = $json->{'results'}[0]->{'geometry'}->{'location'}->{'lat'};
+            $long = $json->{'results'}[0]->{'geometry'}->{'location'}->{'lng'};
+
+            return compact('lat', 'long');
         } catch (Exception $exception) {
             return ['lat' => 0, 'long' => 0];
         }
-
-        $lat  = $json->{'results'}[0]->{'geometry'}->{'location'}->{'lat'};
-        $long = $json->{'results'}[0]->{'geometry'}->{'location'}->{'lng'};
-
-        return compact('lat', 'long');
     }
 
     public function getGeocodeJson(string $url, string $address, string $apiKey): string

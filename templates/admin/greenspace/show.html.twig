@@ -9,25 +9,20 @@
             border: 2px solid #fff;
         }
 
-        /*#tooltip:empty {*/
-        /*    display: none;*/
-        /*}*/
-
-        /*#tooltip {*/
-        /*    font-family: Helvetica, Arial, sans-serif;*/
-        /*    position: absolute;*/
-        /*    padding: 4px;*/
-        /*    margin: 8px;*/
-        /*    background: rgba(0, 0, 0, 0.8);*/
-        /*    color: #fff;*/
-        /*    max-width: 300px;*/
-        /*    font-size: 10px;*/
-        /*    z-index: 9;*/
-        /*    pointer-events: none;*/
-        /*}*/
+        #tooltip {
+            font-family: Helvetica, Arial, sans-serif;
+            position: absolute;
+            padding: 4px;
+            margin: 8px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            max-width: 300px;
+            font-size: 10px;
+            z-index: 9;
+            pointer-events: none;
+        }
     </style>
 {% endblock %}
-
 
 
 {% block title %}Green spaces list{% endblock %}
@@ -44,9 +39,23 @@
     <script>
         const DECK_GL_KEY = 'pk.eyJ1IjoiZ25vdG9uZyIsImEiOiJjandrbmJxaTIwMGUzNDhwanZuNnh6cGgzIn0.XNWwQfuuyXoMzDqrW212bw';
         const THEME = 'mapbox://styles/mapbox/streets-v11';
+
+        // todo: have to be generic
         let lat = {{ greenSpace.latitude }};
         let lng = {{ greenSpace.longitude }};
+        let locationName = "{{ greenSpace.name ~ ', ' ~ greenSpace.address }}";
+        let greenSpaces = [
+            {
+                position: [lng, lat],
+                color: [0, 255, 255],
+                name: locationName,
+                exits: 4214,
+                size: 5,
+            },
+        ]
 
+        // todo: initial long/lat have to come from greenPaces coordinates
+        // todo: first record
         const deckgl = new deck.DeckGL({
             container: 'container',
             mapboxApiAccessToken: DECK_GL_KEY,
@@ -60,25 +69,13 @@
         });
 
         const scatterplotLayer = new deck.ScatterplotLayer({
-            data: [
-                {
-                    position: [lng, lat],
-                    color: [255, 0, 0],
-                    radius: 100
-                }
-            ],
+            data: greenSpaces,
+            opacity: 0.3,
             getFillColor: d => d.color,
-            getRadius: d => d.radius
+            radiusMinPixels: 11,
+            pickable: true,
+            onHover: info => setTooltip(info.x, info.y, info.object)
         })
-
-        const data =  [
-            {
-                name: 'Colma (COLM)',
-                address: '365 D Street, Colma CA 94014',
-                exits: 4214,
-                coordinates: [lng, lat]
-            },
-        ];
 
         const ICON_MAPPING = {
             marker: {x: 0, y: 0, width: 128, height: 128, mask: true}
@@ -86,7 +83,7 @@
 
         const iconLayer = new deck.IconLayer({
             id: 'icon-layer',
-            data,
+            data: greenSpaces,
             pickable: true,
             // iconAtlas and iconMapping are required
             // getIcon: return a string
@@ -94,13 +91,28 @@
             iconMapping: ICON_MAPPING,
             getIcon: d => 'marker',
             sizeScale: 10,
-            getPosition: d => d.coordinates,
-            getSize: d => 5,
+            getPosition: d => d.position,
+            getSize: d => d.size,
             getColor: d => [Math.sqrt(d.exits), 140, 0]
         });
 
         deckgl.setProps({
-            layers: [scatterplotLayer, iconLayer]
+            layers: [
+                scatterplotLayer,
+                iconLayer
+            ]
         });
+
+        function setTooltip(x, y, object) {
+            const tooltip = document.getElementById('tooltip');
+            if (object) {
+                tooltip.style.display = 'block';
+                tooltip.style.left = (x - 120) + 'px';
+                tooltip.style.top = (y + 40) + 'px';
+                tooltip.innerHTML = object.name;
+            } else {
+                tooltip.style.display = 'none';
+            }
+        }
     </script>
 {% endblock %}
