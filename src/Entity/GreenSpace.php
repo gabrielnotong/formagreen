@@ -26,15 +26,11 @@ class GreenSpace
 
     /**
      * @ORM\Column(type="decimal", precision=8, scale=6)
-     * @Assert\NotBlank
-     * @Assert\Regex(pattern="/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?)$/", message="Invalid Latitude.")
      */
     private ?float $latitude = null;
 
     /**
      * @ORM\Column(type="decimal", precision=9, scale=6)
-     * @Assert\NotBlank
-     * @Assert\Regex(pattern="/^[-]?((((1[0-7][0-9])|([0-9]?[0-9]))\.(\d+))|180(\.0+)?)$/", message="Invalid Longitude.")
      */
     private ?float $longitude = null;
 
