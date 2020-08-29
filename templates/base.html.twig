@@ -18,30 +18,6 @@
 {% include 'footer.html.twig' %}
 
 {{ encore_entry_script_tags('app') }}
-<script>
-    function onClickBtnLike(event) {
-        event.preventDefault();
-
-        const spanLikes = this.querySelector('span.js-likes');
-        const icon = this.querySelector('i');
-        const url = this.href;
-
-        axios.get(url).then(function (response) {
-            spanLikes.textContent = response.data.likes;
-            if (icon.classList.contains('fas')) {
-                icon.classList.replace('fas', 'far');
-                return;
-            }
-            icon.classList.replace('far', 'fas');
-        }).catch(function (error) {
-            alert(error.response.data.message);
-        })
-    }
-
-    document.querySelectorAll('a.js-like').forEach(function (link) {
-        link.addEventListener('click', onClickBtnLike);
-    })
-</script>
 {% block javascripts %}{% endblock %}
 </body>
 </html>

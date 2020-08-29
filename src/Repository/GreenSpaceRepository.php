@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\GreenSpace;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,32 +22,8 @@ class GreenSpaceRepository extends ServiceEntityRepository
         parent::__construct($registry, GreenSpace::class);
     }
 
-    // /**
-    //  * @return GreenSpace[] Returns an array of GreenSpace objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function findAllQuery(): Query
     {
-        return $this->createQueryBuilder('g')
-            ->andWhere('g.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('g.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        return $this->createQueryBuilder('g')->getQuery();
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?GreenSpace
-    {
-        return $this->createQueryBuilder('g')
-            ->andWhere('g.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

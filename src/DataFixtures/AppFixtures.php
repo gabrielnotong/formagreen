@@ -13,6 +13,7 @@ use App\Entity\CenterType;
 use App\Entity\TrainingCenter;
 use App\Entity\User;
 use App\Entity\UserLambda;
+use App\Service\Geolocation;
 use App\Service\QRCodeGenerator;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -25,11 +26,16 @@ class AppFixtures extends Fixture
 {
     private UserPasswordEncoderInterface $encoder;
     private QRCodeGenerator $qrCodeGenerator;
+    private Geolocation $geolocation;
 
-    public function __construct(UserPasswordEncoderInterface $encoder, QRCodeGenerator $qrCodeGenerator)
-    {
+    public function __construct(
+        UserPasswordEncoderInterface $encoder,
+        QRCodeGenerator $qrCodeGenerator,
+        Geolocation $geolocation
+    ) {
         $this->encoder = $encoder;
         $this->qrCodeGenerator = $qrCodeGenerator;
+        $this->geolocation = $geolocation;
     }
 
     /**
@@ -164,10 +170,17 @@ class AppFixtures extends Fixture
         for ($i = 0; $i <= 9; $i++) {
             $greenSpace = (new GreenSpace())
                 ->setName($faker->city)
-                ->setLatitude($faker->latitude)
-                ->setLongitude($faker->longitude)
+                ->setStreetNumber($faker->numberBetween(1, 255))
+                ->setStreetName($faker->streetName)
+                ->setZipCode($faker->postcode)
+                ->setCity($faker->city)
+                ->setCountry($faker->country)
                 ->setTrainingCenter($trainingCenters[$faker->numberBetween(0, 9)])
             ;
+            $coordinates = $this->geolocation->generateCoordinates($greenSpace);
+            $greenSpace
+                ->setLatitude($coordinates['lat'])
+                ->setLongitude($coordinates['long']);
 
             $greenSpaces[] = $greenSpace;
             $manager->persist($greenSpace);

@@ -15,12 +15,6 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ path('admin_trainings_index') }}">
-                        <i class="fas fa-hotel text-warning"></i>
-                        Training centers
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" href="{{ path('admin_partners_index') }}">
                         <i class="fas fa-handshake text-white"></i>
                         Partners
@@ -30,6 +24,18 @@
                     <a class="nav-link" href="{{ path('admin_discounts_index') }}">
                         <i class="fas fa-percent text-success"></i>
                         Discounts
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('admin_trainings_index') }}">
+                        <i class="fas fa-hotel text-warning"></i>
+                        Training centers
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('admin_green_spaces_index') }}">
+                        <i class="fas fa-tree text-success"></i>
+                        Green Spaces
                     </a>
                 </li>
                 <li class="nav-item">
@@ -54,17 +60,17 @@
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" id="accountDropdownLink">
                         <i class="fa fa-user-circle text-success"></i>&nbsp;{{ u }}
                     </a>
-                    <div class="dropdown-menu dropdown-menu-right rounded-0 border-top-0"
+                    <div class="dropdown-menu dropdown-menu-right rounded-0 border-top-0 bg-dark"
                          aria-labelledby="accountDropdownLink">
 
                         {% if is_granted('ROLE_ADMIN') %}
-                            <a href="{{ path('admin_trainings_index') }}" class="dropdown-item text-primary">
+                            <a href="{{ path('admin_trainings_index') }}" class="dropdown-item text-info">
                                 <i class="fa fa-cog mr-1"></i> Administration
                             </a>
                         {% endif %}
 
                         <div class="dropdown-divider"></div>
-                        <a href="{{ path( u.getType() ~ '_me') }}" class="dropdown-item text-black-50">
+                        <a href="{{ path( u.getType() ~ '_me') }}" class="dropdown-item text-light">
                             <i class="fa fa-id-badge mr-1"></i> My Profile
                         </a>
                         <div class="dropdown-divider"></div>
