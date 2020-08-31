@@ -70,6 +70,11 @@ class Discount
         $this->prestations = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        return sprintf("%f %s %s", $this->percentage, '%', $this->description);
+    }
+
     public function getId(): ?int
     {
         return $this->id;

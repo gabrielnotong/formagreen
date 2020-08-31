@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Add prestation{% endblock %}
+
+{% block body %}
+    <div class="container">
+        {{ form_start(form) }}
+        <div class="card rounded-0">
+            <h1 class="card-header font-weight-bold text-center text-primary">Create new prestation</h1>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="alert alert-light rounded-0 text-center">
+                            <h2 class="alert-heading">Prestation general information</h2>
+                            <hr>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="alert alert-light rounded-0">
+                            {{ form_row(form.userMember) }}
+                            {{ form_row(form.greenSpace) }}
+                            {{ form_row(form.type) }}
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="alert alert-light rounded-0">
+                            {{ form_row(form.discount) }}
+                            {{ form_row(form.startsAt) }}
+                            {{ form_row(form.endsAt) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-muted rounded-0">
+                <button type="submit" class="btn btn-success float-right">
+                    <i class="fas fa-save mr-1"></i>Save
+                </button>
+            </div>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function () {
+            $('#prestation_startsAt, #prestation_endsAt').datepicker({
+                format: 'yyyy/mm/dd',
+                startDate: new Date(),
+            });
+        })
+    </script>
+{% endblock %}

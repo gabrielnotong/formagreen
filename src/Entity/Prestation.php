@@ -7,6 +7,7 @@ namespace App\Entity;
 use App\Repository\PrestationRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=PrestationRepository::class)
@@ -22,22 +23,30 @@ class Prestation
 
     /**
      * @ORM\Column(type="datetime")
+     * @Assert\Type("\DateTimeInterface", message="Incorrect date format: waiting for yyyy/mm/dd")
      */
     private ?DateTimeInterface $startsAt = null;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Assert\Type("\DateTimeInterface", message="Incorrect date format: waiting for yyyy/mm/dd")
+     * @Assert\GreaterThan(
+     *     propertyPath="startsAt",
+     *     message="The end date must come after the start date"
+     * )
      */
     private ?DateTimeInterface $endsAt = null;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
      */
     private ?string $type = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="prestations")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotBlank
      */
     private ?User $userMember = null;
 
@@ -48,6 +57,7 @@ class Prestation
 
     /**
      * @ORM\ManyToOne(targetEntity=GreenSpace::class, inversedBy="prestations")
+     * @Assert\NotBlank
      */
     private ?GreenSpace $greenSpace = null;
 
