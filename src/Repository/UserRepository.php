@@ -32,9 +32,20 @@ class UserRepository extends ServiceEntityRepository
         return $this->findVisibleQueryBuilder()->andWhere('u INSTANCE OF App\Entity\UserLambda')->getQuery();
     }
 
+    public function findAllMembers(): QueryBuilder
+    {
+        return $this->findVisibleQueryBuilder()
+            ->andWhere('u.status = :active')
+            ->innerJoin('u.userRoles', 'role')
+            ->andWhere('role.name = :member')
+            ->setParameter('member', 'ROLE_MEMBER')
+            ->setParameter('active', true);
+    }
+
     private function findVisibleQueryBuilder(): QueryBuilder
     {
         return $this->createQueryBuilder('u')
-            ->where('u.deleted = 0');
+            ->where('u.deleted = :deleted')
+            ->setParameter('deleted', false);
     }
 }
