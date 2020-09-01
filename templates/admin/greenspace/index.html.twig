@@ -9,6 +9,9 @@
         <a href="{{ path('admin_green_spaces_create') }}" type="button" class="btn btn-primary mb-1">
             <i class="fa fa-plus mr-1"></i> Add
         </a>
+
+        {% include 'admin/partials/search.html.twig' %}
+
         <table class="table table-hover">
             <thead>
             <tr>
@@ -57,4 +60,8 @@
 
         {{ paginator.render() }}
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('search') }}
 {% endblock %}

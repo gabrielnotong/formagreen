@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\GreenSpace;
-use App\Event\GreenSpaceCreatedEvent;
 use App\Form\GreenSpaceType;
 use App\Repository\GreenSpaceRepository ;
 use App\Service\Paginator;
@@ -49,10 +48,7 @@ class AdminGreenSpaceController extends AbstractController
         $greenSpace = new GreenSpace();
 
         $form = $this->createForm(GreenSpaceType::class, $greenSpace);
-
         $form->handleRequest($request);
-
-        $eventDispatcher->dispatch(new GreenSpaceCreatedEvent($greenSpace));
 
         if ($form->isSubmitted() && $form->isValid()) {
             $manager->persist($greenSpace);
@@ -77,7 +73,6 @@ class AdminGreenSpaceController extends AbstractController
     public function edit(GreenSpace $greenSpace, Request $request, EntityManagerInterface $manager)
     {
         $form = $this->createForm(GreenSpaceType::class, $greenSpace);
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

@@ -77,3 +77,18 @@ td.actions i {
     background-color: #454d55;
     color: darkgrey;
 }
+
+.active-cyan-2 input.form-control[type=text]:focus:not([readonly]) {
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 1px solid #0069D9;
+    box-shadow: 0 1px 0 0 #0069D9;
+}
+.active-cyan input.form-control[type=text] {
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 1px solid #0069D9;
+    box-shadow: 0 1px 0 0 #0069D9;
+}
