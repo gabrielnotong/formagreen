@@ -8,7 +8,6 @@ use App\Entity\GreenSpace;
 use App\Entity\TrainingCenter;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -55,8 +54,7 @@ class GreenSpaceType extends ApplicationType
                 'country',
                 TextType::class,
                 $this->getConfiguration('Country', 'Country where the green space is based...'),
-            )
-           ;
+            );
     }
 
     public function configureOptions(OptionsResolver $resolver)

@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
-use App\Event\GreenSpaceCreatedEvent;
+use App\Entity\GreenSpace;
 use App\Service\Geolocation;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Doctrine\Common\EventSubscriber;
+use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Events;
 
-class GreenSpaceSubscriber implements EventSubscriberInterface
+class GreenSpaceSubscriber implements EventSubscriber
 {
     private Geolocation $geolocation;
 
@@ -16,16 +18,31 @@ class GreenSpaceSubscriber implements EventSubscriberInterface
         $this->geolocation = $geolocation;
     }
     
-    public static function getSubscribedEvents(): array
+    public function getSubscribedEvents(): array
     {
         return [
-            GreenSpaceCreatedEvent::class => 'onGreenSpaceCreated',
+            Events::prePersist => 'prePersist',
+            Events::preUpdate => 'preUpdate',
         ];
     }
 
-    public function onGreenSpaceCreated(GreenSpaceCreatedEvent $event)
+    public function prePersist(LifecycleEventArgs $event)
     {
-        $greenSpace = $event->getGreenSpace();
+        $this->mutateData($event);
+    }
+
+    public function preUpdate(LifecycleEventArgs $event)
+    {
+        $this->mutateData($event);
+    }
+
+    private function mutateData(LifecycleEventArgs $event)
+    {
+        $greenSpace = $event->getObject();
+
+        if (!$greenSpace instanceof GreenSpace) {
+            return;
+        }
 
         $coordinates = $this->geolocation->generateCoordinates($greenSpace);
 

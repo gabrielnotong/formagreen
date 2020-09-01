@@ -38,5 +38,9 @@ services:
             $googleMapUrl: '%google_api_url%'
             $googleApiKey: '%google_api_key%'
 
+    App\EventSubscriber\GreenSpaceSubscriber:
+        tags:
+            - { name: 'doctrine.event_subscriber' }
+
     App\Twig\TwigBootStrapExtension:
         tags: ['twig.extension']
