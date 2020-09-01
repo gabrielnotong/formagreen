@@ -24,7 +24,7 @@ class Discount
     private ?int $id = null;
 
     /**
-     * @ORM\Column(type="decimal", precision=3, scale=2)
+     * @ORM\Column(type="decimal", precision=5, scale=2)
      * @Assert\NotBlank
      * @Assert\Type("float", message="must be a decimal")
      */
@@ -72,7 +72,7 @@ class Discount
 
     public function __toString(): string
     {
-        return sprintf("%f %s %s", $this->percentage, '%', $this->description);
+        return sprintf("%001.2f %s %s", $this->percentage, '%', $this->description);
     }
 
     public function getId(): ?int
