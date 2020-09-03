@@ -45,4 +45,14 @@ class AdminMemberController extends AbstractController
 
         return $this->redirect($referer);
     }
+
+    /**
+     * @Route("/admin/members/{id}/prestations", name="admin_members_prestations")
+     */
+    public function prestations(User $user): Response
+    {
+        return $this->render('admin/member/show_prestations.html.twig', [
+            'prestations' =>  $user->getPrestations()
+        ]);
+    }
 }

@@ -28,6 +28,11 @@
                     <td>{{ member.email }}</td>
                     <td>{{ member.centerType }}</td>
                     <td class="actions text-right">
+                        <a  href="{{ path('admin_members_prestations', {id: member.id}) }}"
+                            class="btn btn-light btn-sm mr-1"
+                            title="Prestations of: {{ member.companyName }}">
+                            <i class="fa fa-map-marked-alt text-primary"></i>
+                        </a>
                         {% include 'admin/partials/member_actions.html.twig' with {'member': member} %}
                     </td>
                 </tr>

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Entity\Role;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
@@ -29,7 +30,12 @@ class UserRepository extends ServiceEntityRepository
 
     public function findAllUsersLambda(): Query
     {
-        return $this->findVisibleQueryBuilder()->andWhere('u INSTANCE OF App\Entity\UserLambda')->getQuery();
+        return $this->findVisibleQueryBuilder()
+            ->andWhere('u INSTANCE OF App\Entity\UserLambda')
+            ->innerJoin('u.userRoles', 'role')
+            ->andWhere('role.name != :admin')
+            ->setParameter('admin', Role::ROLE_ADMIN)
+            ->getQuery();
     }
 
     public function findAllMembers(): QueryBuilder
@@ -38,7 +44,7 @@ class UserRepository extends ServiceEntityRepository
             ->andWhere('u.status = :active')
             ->innerJoin('u.userRoles', 'role')
             ->andWhere('role.name = :member')
-            ->setParameter('member', 'ROLE_MEMBER')
+            ->setParameter('member', Role::ROLE_MEMBER)
             ->setParameter('active', true);
     }
 
