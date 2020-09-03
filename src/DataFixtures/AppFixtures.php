@@ -164,13 +164,12 @@ class AppFixtures extends Fixture
             $manager->persist($tc);
         }
 
-
         // Manage fake green spaces
         $greenSpaces = [];
-        for ($i = 0; $i <= 9; $i++) {
+        for ($i = 0; $i <= 99; $i++) {
             $greenSpace = (new GreenSpace())
                 ->setName($faker->city)
-                ->setStreetNumber($faker->numberBetween(1, 255))
+                ->setStreetNumber($faker->numberBetween(1, 10))
                 ->setStreetName($faker->streetName)
                 ->setZipCode($faker->postcode)
                 ->setCity($faker->city)
@@ -188,14 +187,14 @@ class AppFixtures extends Fixture
 
         // Manage fake prestations
         $greenSpaceTypes = ['Maintenance', 'Installation'];
-        for ($i = 0; $i <= 9; $i++) {
+        for ($i = 0; $i <= 99; $i++) {
             $endDate = new DateTime(sprintf(User::ADD_MONTHS,  $faker->numberBetween(1, 4)));
             $prestation = (new Prestation())
                 ->setStartsAt($startDate)
                 ->setEndsAt($endDate)
                 ->setUserMember($users[$faker->numberBetween(0, 9)])
                 ->setDiscount($discounts[$faker->numberBetween(0, 9)])
-                ->setGreenSpace($greenSpaces[$faker->numberBetween(0, 9)])
+                ->setGreenSpace($greenSpaces[$faker->numberBetween(0, 99)])
                 ->setType($faker->randomElement($greenSpaceTypes))
             ;
 

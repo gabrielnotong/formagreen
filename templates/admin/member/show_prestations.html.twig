@@ -32,21 +32,22 @@
     <div id="tooltip"></div>
 {% endblock %}
 
-{% block javascripts %}
-    <script src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
-    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
-    <script>
-        let greenSpaces = [
-            {% for greenSpace in greenSpaces %}
-                {
-                    position: [{{ greenSpace.longitude }}, {{ greenSpace.latitude }}],
-                    color: [0, 255, 255],
-                    name: "{{ greenSpace.address }}",
-                    exits: {{ random(100, 4243) }},
-                    size: 5,
-                },
-            {% endfor %}
-        ]
-    </script>
-    {{ encore_entry_script_tags('map') }}
-{% endblock %}
+ {% block javascripts %}
+     <script src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
+     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
+     <script>
+         let greenSpaces = [
+             {% for prestation in prestations %}
+             {% set greenSpace = prestation.greenSpace %}
+             {
+                 position: [{{ greenSpace.longitude }}, {{ greenSpace.latitude }}],
+                 color: [0, 255, 255],
+                 name: "{{ greenSpace.address }}",
+                 exits: {{ random(100, 4243) }},
+                 size: 5,
+             },
+             {% endfor %}
+         ]
+     </script>
+     {{ encore_entry_script_tags('map') }}
+ {% endblock %}

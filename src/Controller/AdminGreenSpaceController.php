@@ -36,7 +36,7 @@ class AdminGreenSpaceController extends AbstractController
     public function show(GreenSpace $greenSpace)
     {
         return $this->render('admin/greenspace/show.html.twig', [
-            'greenSpace' => $greenSpace,
+            'greenSpaces' => [$greenSpace],
         ]);
     }
 
