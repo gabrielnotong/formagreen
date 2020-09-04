@@ -1,117 +1,85 @@
-<nav class="navbar navbar-dark bg-dark navbar-expand-lg">
-    <a class="navbar-brand text-white font-weight-bold fa-2x" href="{{ path('homepage') }}">Forma-Green</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor03"
-            aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-    <div class="collapse navbar-collapse" id="navbarColor03">
-        {% if is_granted('ROLE_ADMIN') %}
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-itemannouncements">
-                    <a class="nav-link" href="{#{{ path('admin_dashboard') }}#}">
-                        <i class="fas fa-chart-line text-danger"></i>
-                        Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('admin_partners_index') }}">
-                        <i class="fas fa-handshake text-white"></i>
-                        Partners
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('admin_discounts_index') }}">
-                        <i class="fas fa-percent text-success"></i>
-                        Discounts
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('admin_trainings_index') }}">
-                        <i class="fas fa-hotel text-warning"></i>
-                        Training centers
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('admin_green_spaces_index') }}">
-                        <i class="fas fa-tree text-success"></i>
-                        Green Spaces
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('admin_prestations_index') }}">
-                        <i class="fas fa-people-carry text-primary"></i>
-                        Prestations
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('admin_users_index') }}">
-                        <i class="fas fa-users text-info"></i>
-                        Users
-                    </a>
-                </li>
-            </ul>
-        {% endif %}
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-                <a href="{{ path('homepage') }}" target="_blank" class="nav-link">
-                    <i class="fas fa-eye text-primary"></i>
-                    Visit website
-                </a>
-            </li>
+    <!-- Sidebar - Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ path('homepage') }}">
+        <div class="sidebar-brand-icon rotate-n-15">
+            <i class="fas fa-tree"></i>
+        </div>
+        <div class="sidebar-brand-text mx-3">Forma<sup class="text-success">GREEN</sup></div>
+    </a>
 
-            {% set u = app.user %}
-            {% if u %}
-                <li class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" id="accountDropdownLink">
-                        <i class="fa fa-user-circle text-success"></i>&nbsp;{{ u }}
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right rounded-0 border-top-0 bg-dark"
-                         aria-labelledby="accountDropdownLink">
+    <hr class="sidebar-divider my-0">
 
-                        {% if is_granted('ROLE_ADMIN') %}
-                            <a href="{{ path('admin_trainings_index') }}" class="dropdown-item text-info">
-                                <i class="fa fa-cog mr-1"></i> Administration
-                            </a>
-                        {% endif %}
+    {% if is_granted('ROLE_ADMIN') %}
+        <li class="nav-item active">
+            <a class="nav-link" href="{{ path('homepage') }}">
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>Dashboard</span></a>
+        </li>
 
-                        <div class="dropdown-divider"></div>
-                        <a href="{{ path( u.getType() ~ '_me') }}" class="dropdown-item text-light">
-                            <i class="fa fa-id-badge mr-1"></i> My Profile
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="{{ path('account_password') }}" class="dropdown-item text-warning">
-                            <i class="fa fa-key mr-1"></i> Change my password
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="{{ path('account_logout') }}" class="dropdown-item text-danger">
-                            <i class="fa fa-power-off mr-1"></i> Logout
-                        </a>
-                    </div>
-                </li>
-            {% else %}
-                <li class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" id="accountDropdownLink">
-                       <i class="fa fa-users-cog text-warning"></i> Become a member
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right rounded-0 border-top-0"
-                         aria-labelledby="accountDropdownLink">
-                        <a href="{{ path('user_lambda_register') }}" class="dropdown-item text-primary">
-                            <i class="fa fa-user-friends mr-1"></i>You are particular
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="{{ path('training_center_register') }}" class="dropdown-item text-warning">
-                            <i class="fa fa-building mr-1"></i>You are a company
-                        </a>
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('account_login') }}">Login</a>
-                </li>
-            {% endif %}
-        </ul>
+        <hr class="sidebar-divider">
+
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            Interface
+        </div>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('admin_partners_index') }}">
+                <i class="fas fa-fw fa-handshake"></i>
+                <span>Partners</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('admin_discounts_index') }}">
+                <i class="fas fa-fw fa-dollar-sign"></i>
+                <span>Discounts</span>
+            </a>
+        </li>
+
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            Globe care
+        </div>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('admin_green_spaces_index') }}">
+                <i class="fas fa-fw fa-leaf"></i>
+                <span>Green spaces</span></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('admin_prestations_index') }}">
+                <i class="fas fa-fw fa-globe-africa"></i>
+                <span>Prestations</span></a>
+        </li>
+
+        <hr class="sidebar-divider">
+
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            Members
+        </div>
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="{{ path('admin_trainings_index') }}">
+                <i class="fas fa-fw fa-building"></i>
+                <span>Training centers</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('admin_users_index') }}">
+                <i class="fas fa-fw fa-user-friends"></i>
+                <span>Users</span>
+            </a>
+        </li>
+    {% endif %}
+
+    <hr class="sidebar-divider d-none d-md-block">
+    <!-- Sidebar Toggler (Sidebar) -->
+    <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
     </div>
-</nav>
+
+</ul>
+<!-- End of Sidebar -->
+
 {% for label, messages in app.flashes %}
     <div class="container-fluid">
         <div class="alert alert-{{ label }} alert-dismissible fade show mt-4 p-3" role="alert">
