@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use App\Entity\User;
-use App\Event\TrainingCenterRegisterEvent;
-use App\Event\UserLambdaRegisterEvent;
 use App\Repository\RoleRepository;
 use App\Service\QRCodeGenerator;
 use DateTime;
+use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Events;
 use Exception;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class MemberSubscriber implements EventSubscriberInterface
+class MemberSubscriber implements EventSubscriber
 {
     private EntityManagerInterface $manager;
     private UserPasswordEncoderInterface $encoder;
@@ -34,60 +34,96 @@ class MemberSubscriber implements EventSubscriberInterface
         $this->roleRepository = $roleRepository;
     }
     
-    public static function getSubscribedEvents(): array
+    public function getSubscribedEvents(): array
     {
         return [
-            UserLambdaRegisterEvent::class => 'onUserLambdaRegister',
-            TrainingCenterRegisterEvent::class => 'onTrainingCenterRegister',
+            Events::prePersist => 'prePersist',
+            Events::preUpdate => 'preUpdate',
         ];
     }
 
     /**
      * @throws Exception
      */
-    public function onUserLambdaRegister(UserLambdaRegisterEvent $event)
+    public function prePersist(LifecycleEventArgs $event)
     {
-        $member = $event->getUserLambda();
+        $member = $event->getObject();
 
-        $this->updateMember($member);
-
-        $qrCode = $this->qrCodeGenerator->forUserLambda($member);
-        $member->setQrCode($qrCode);
-
-        $this->manager->persist($member);
-        $this->manager->flush();
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function onTrainingCenterRegister(TrainingCenterRegisterEvent $event)
-    {
-        $member = $event->getTrainingCenter();
-
-        $this->updateMember($member);
-
-        $qrCode = $this->qrCodeGenerator->forTrainingCenter($member);
-
-        $member->setQrCode($qrCode);
-
-        $this->manager->persist($member);
-        $this->manager->flush();
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function updateMember(User $user)
-    {
-        $password = $this->encoder->encodePassword($user, $user->getHash());
+        if (!$member instanceof User) {
+            return;
+        }
 
         $role = $this->roleRepository->findOneBy(['name' => 'ROLE_MEMBER']);
 
-        $user->setHash($password)
+        $member
             ->setStartsAt(new DateTime())
-            ->setEndsAt(new DateTime(sprintf(User::ADD_MONTHS, $user->getNumberOfMonths())))
+            ->setEndsAt(new DateTime(sprintf(User::ADD_MONTHS, $member->getNumberOfMonths())))
             ->addUserRole($role)
-        ;
+            ;
+
+        $this->updateData($member);
     }
+
+    /**
+     * @throws Exception
+     */
+    public function preUpdate(LifecycleEventArgs $event): void
+    {
+        $member = $event->getObject();
+
+        if (!$member instanceof User) {
+            return;
+        }
+
+        $this->updateData($member);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function updateData(User $user): void
+    {
+        $qrCode = $this->qrCodeGenerator->forUser($user);
+        $user->setQrCode($qrCode);
+
+        if (!$user->getPassword()) {
+            return;
+        }
+
+        $hash = $this->encoder->encodePassword($user, $user->getPassword());
+        $user->setHash($hash);
+    }
+//
+//    /**
+//     * @throws Exception
+//     */
+//    public function onTrainingCenterRegister(TrainingCenterRegisterEvent $event)
+//    {
+//        $member = $event->getTrainingCenter();
+//
+//        $this->updateData($member);
+//
+//        $qrCode = $this->qrCodeGenerator->forTrainingCenter($member);
+//
+//        $member->setQrCode($qrCode);
+//
+//        $this->manager->persist($member);
+//        $this->manager->flush();
+//    }
+//
+//    /**
+//     * @throws Exception
+//     */
+//    public function updateData(User $user)
+//    {
+//        $password = $this->encoder->encodePassword($user, $user->getHash());
+//
+//        $role = $this->roleRepository->findOneBy(['name' => 'ROLE_MEMBER']);
+//
+//        $user->setHash($password)
+//            ->setStartsAt(new DateTime())
+//            ->setEndsAt(new DateTime(sprintf(User::ADD_MONTHS, $user->getNumberOfMonths())))
+//            ->addUserRole($role)
+//        ;
+//    }
 }

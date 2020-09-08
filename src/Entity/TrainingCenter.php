@@ -14,8 +14,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class TrainingCenter extends User
 {
-    const QRCODE_CONTENT = "Name: %s\nEmail: %s\nMember: from %s to %s\nAddress: %s\nPhone number: %s";
-
     use AddressTrait;
 
     /**

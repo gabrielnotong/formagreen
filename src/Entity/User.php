@@ -34,6 +34,7 @@ abstract class User implements UserInterface
        6 => 6,
        12 => 12
     ];
+    const QRCODE_CONTENT = "Name: %s\nEmail: %s\nMember: from %s to %s\nAddress: %s\nPhone number: %s";
 
     /**
      * @ORM\Id()
@@ -325,8 +326,10 @@ abstract class User implements UserInterface
         return $this->numberOfMonths;
     }
 
-    public function setNumberOfMonths(?int $numberOfMonths): void
+    public function setNumberOfMonths(?int $numberOfMonths): self
     {
         $this->numberOfMonths = $numberOfMonths;
+
+        return $this;
     }
 }

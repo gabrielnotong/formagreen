@@ -42,5 +42,9 @@ services:
         tags:
             - { name: 'doctrine.event_subscriber' }
 
+    App\EventSubscriber\MemberSubscriber:
+        tags:
+            - { name: 'doctrine.event_subscriber' }
+
     App\Twig\TwigBootStrapExtension:
         tags: ['twig.extension']
