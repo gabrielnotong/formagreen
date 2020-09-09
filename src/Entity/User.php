@@ -55,15 +55,17 @@ abstract class User implements UserInterface
      */
     private ?string $hash = null;
 
+    private ?string $plainTextPassword = null;
+
     /**
      * @var string|null
      * @Assert\EqualTo(
-     *     propertyPath="hash",
+     *     propertyPath="plainTextPassword",
      *     message="The two passwords are not the same !",
      *     groups={"training", "userLambda"}
      * )
      */
-    public ?string $passwordConfirm = null;
+    private ?string $passwordConfirm = null;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Role", mappedBy="users")
@@ -136,18 +138,6 @@ abstract class User implements UserInterface
         return $this;
     }
 
-    public function getHash(): ?string
-    {
-        return $this->hash;
-    }
-
-    public function setHash(string $hash): self
-    {
-        $this->hash = $hash;
-
-        return $this;
-    }
-
     /**
      * @return array|string[]
      */
@@ -160,6 +150,45 @@ abstract class User implements UserInterface
         return  ['ROLE_USER', ...$roles];
     }
 
+    public function setPlainTextPassword(string $password): self
+    {
+        $this->plainTextPassword = $password;
+
+        return $this;
+    }
+
+    public function getPlainTextPassword(): ?string
+    {
+        return $this->plainTextPassword;
+    }
+
+    public function getHash(): ?string
+    {
+        return $this->hash;
+    }
+
+    public function setHash(string $hash): self
+    {
+        $this->hash = $hash;
+
+        return $this;
+    }
+
+    public function getPasswordConfirm(): ?string
+    {
+        return $this->passwordConfirm;
+    }
+
+    public function setPasswordConfirm(string $password): self
+    {
+        $this->passwordConfirm = $password;
+
+        return $this;
+    }
+
+    /**
+     * This is used by sf to check user credentials. It is mandatory
+     */
     public function getPassword(): string
     {
         return $this->hash;

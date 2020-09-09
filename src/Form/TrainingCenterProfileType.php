@@ -15,7 +15,8 @@ class TrainingCenterProfileType extends TrainingCenterRegisterType
         parent::buildForm($builder, $options);
 
         $builder
-            ->remove('hash')
+            ->remove('numberOfMonths')
+            ->remove('plainTextPassword')
             ->remove('passwordConfirm')
         ;
     }

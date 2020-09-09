@@ -47,7 +47,7 @@ class UserLambdaRegisterType extends ApplicationType
                 ],
             )
             ->add(
-                'hash',
+                'plainTextPassword',
                 PasswordType::class,
                 $this->getConfiguration('Password', 'Your Password...'),
             )

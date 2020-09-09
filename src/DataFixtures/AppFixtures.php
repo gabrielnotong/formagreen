@@ -48,7 +48,7 @@ class AppFixtures extends Fixture
             $user->setFirstName($faker->firstName($gender))
                 ->setLastName($faker->lastName)
                 ->setEmail($faker->email)
-                ->setHash('password')
+                ->setPlainTextPassword('password')
                 ->setNumberOfMonths(mt_rand(2,5))
                 ->setPhoneNumber($faker->e164PhoneNumber)
             ;
@@ -109,7 +109,7 @@ class AppFixtures extends Fixture
         for ($i = 0; $i <= 9; $i++) {
             $tc = new TrainingCenter();
             $tc->setEmail($faker->email)
-                ->setHash('password')
+                ->setPlainTextPassword('password')
                 ->setCompanyName($faker->company)
                 ->setStreetNumber($faker->numberBetween(1, 255))
                 ->setStreetName($faker->streetName)
