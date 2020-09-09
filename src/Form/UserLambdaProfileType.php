@@ -14,7 +14,7 @@ class UserLambdaProfileType extends UserLambdaRegisterType
 
         $builder
             ->remove('numberOfMonths')
-            ->remove('hash')
+            ->remove('plainTextPassword')
             ->remove('passwordConfirm')
         ;
     }

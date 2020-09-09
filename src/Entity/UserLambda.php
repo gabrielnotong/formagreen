@@ -11,8 +11,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class UserLambda extends User
 {
-    const QRCODE_CONTENT = "Name: %s\nEmail: %s\nMember: from %s to %s\nPhone number: %s";
-
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Assert\NotBlank(message="First name is mandatory", groups={"userLambda"})
@@ -85,5 +83,10 @@ class UserLambda extends User
         $this->slug = $slug;
 
         return $this;
+    }
+
+    public function getAddress(): string
+    {
+        return '';
     }
 }

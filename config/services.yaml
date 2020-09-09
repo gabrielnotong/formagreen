@@ -42,5 +42,21 @@ services:
         tags:
             - { name: 'doctrine.event_subscriber' }
 
+    App\EventSubscriber\PasswordEncoderSubscriber:
+        tags:
+            - { name: 'doctrine.event_subscriber', priority: 10 }
+
+    App\EventSubscriber\QRCodeGeneratorSubscriber:
+        tags:
+            - { name: 'doctrine.event_subscriber', priority: 11 }
+
+    App\EventSubscriber\MemberRoleSubscriber:
+        tags:
+            - { name: 'doctrine.event_subscriber', priority: 12 }
+
+    App\EventSubscriber\DateStartEndSubscriber:
+        tags:
+            - { name: 'doctrine.event_subscriber', priority: 13 }
+
     App\Twig\TwigBootStrapExtension:
         tags: ['twig.extension']

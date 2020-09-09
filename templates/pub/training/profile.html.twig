@@ -13,6 +13,7 @@
                         <div class="alert alert-light rounded-0">
                             <h2 class="alert-heading">General information</h2>
                             <hr>
+                            {{ form_row(form.centerType) }}
                             {{ form_row(form.email) }}
                             {{ form_row(form.companyName) }}
                             {{ form_row(form.phoneNumber) }}
@@ -20,11 +21,13 @@
                     </div>
                     <div class="col">
                         <div class="alert alert-light rounded-0">
-                            <h2 class="alert-heading">Contact</h2>
+                            <h2 class="alert-heading">Address</h2>
                             <hr>
-                            {{ form_row(form.address) }}
-                            {{ form_row(form.country) }}
+                            {{ form_row(form.streetNumber) }}
+                            {{ form_row(form.streetName) }}
+                            {{ form_row(form.zipCode) }}
                             {{ form_row(form.city) }}
+                            {{ form_row(form.country) }}
                         </div>
                     </div>
                 </div>

@@ -8,33 +8,24 @@ use App\Entity\Discount;
 use App\Entity\GreenSpace;
 use App\Entity\Partner;
 use App\Entity\Prestation;
-use App\Entity\Role;
 use App\Entity\CenterType;
 use App\Entity\TrainingCenter;
 use App\Entity\User;
 use App\Entity\UserLambda;
 use App\Service\Geolocation;
-use App\Service\QRCodeGenerator;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Exception;
 use Faker\Factory;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AppFixtures extends Fixture
 {
-    private UserPasswordEncoderInterface $encoder;
-    private QRCodeGenerator $qrCodeGenerator;
     private Geolocation $geolocation;
 
     public function __construct(
-        UserPasswordEncoderInterface $encoder,
-        QRCodeGenerator $qrCodeGenerator,
         Geolocation $geolocation
     ) {
-        $this->encoder = $encoder;
-        $this->qrCodeGenerator = $qrCodeGenerator;
         $this->geolocation = $geolocation;
     }
 
@@ -46,23 +37,6 @@ class AppFixtures extends Fixture
         $faker = Factory::create();
         $users = [];
         $genders = ['male', 'female'];
-        $roleNames = ['ROLE_MEMBER', 'ROLE_ADMIN'];
-
-        $roles = [];
-        for ($i = 0; $i<count($roleNames); $i++) {
-            $role = (new Role())->setName($roleNames[$i]);
-
-            $roles[] = $role;
-            $manager->persist($role);
-        }
-
-        $adminUser = new UserLambda();
-        $adminUser->setFirstName('Gabriel')
-            ->setLastName('Notong')
-            ->setEmail('gabs@gmail.com')
-            ->setHash($this->encoder->encodePassword($adminUser, 'password'))
-            ->addUserRole($roles[1]);
-        $manager->persist($adminUser);
 
         $startDate = new DateTime('now');
         // Manage fake members
@@ -71,21 +45,13 @@ class AppFixtures extends Fixture
 
             $gender = $faker->randomElement($genders);
 
-            $hash = $this->encoder->encodePassword($user, 'password');
-
-            $endDate = new DateTime(sprintf(User::ADD_MONTHS,  $faker->numberBetween(6, 12)));
             $user->setFirstName($faker->firstName($gender))
                 ->setLastName($faker->lastName)
                 ->setEmail($faker->email)
-                ->setHash($hash)
-                ->addUserRole($roles[0])
+                ->setPlainTextPassword('password')
+                ->setNumberOfMonths(mt_rand(2,5))
                 ->setPhoneNumber($faker->e164PhoneNumber)
-                ->setStartsAt($startDate)
-                ->setEndsAt($endDate)
             ;
-
-            $qrCode = $this->qrCodeGenerator->forUserLambda($user);
-            $user->setQrCode($qrCode);
 
             $manager->persist($user);
             $users[] = $user;
@@ -142,23 +108,17 @@ class AppFixtures extends Fixture
         $trainingCenters = [];
         for ($i = 0; $i <= 9; $i++) {
             $tc = new TrainingCenter();
-            $endDate = new DateTime(sprintf(User::ADD_MONTHS,  $faker->numberBetween(1, 4)));
-            $tc
-                ->setEmail($faker->email)
-                ->setHash($this->encoder->encodePassword($tc, 'password'))
+            $tc->setEmail($faker->email)
+                ->setPlainTextPassword('password')
                 ->setCompanyName($faker->company)
                 ->setStreetNumber($faker->numberBetween(1, 255))
                 ->setStreetName($faker->streetName)
                 ->setZipCode($faker->postcode)
                 ->setCity($faker->city)
                 ->setCountry($faker->country)
-                ->setStartsAt($startDate)
-                ->setEndsAt($endDate)
                 ->setPhoneNumber($faker->e164PhoneNumber)
                 ->setCenterType($tcTypes[$faker->numberBetween(0, 3)])
             ;
-            $qrCode = $this->qrCodeGenerator->forTrainingCenter($tc);
-            $tc->setQrCode($qrCode);
 
             $trainingCenters[] = $tc;
             $manager->persist($tc);

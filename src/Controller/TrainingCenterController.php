@@ -1,15 +1,14 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Controller;
 
 use App\Entity\TrainingCenter;
-use App\Event\TrainingCenterRegisterEvent;
 use App\Form\TrainingCenterProfileType;
 use App\Form\TrainingCenterRegisterType;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Psr\EventDispatcher\EventDispatcherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,14 +21,15 @@ class TrainingCenterController extends AbstractController
      * @Route("/training/register", name="training_center_register")
      * @throws Exception
      */
-    public function register(Request $request, EventDispatcherInterface $eventDispatcher): Response {
+    public function register(Request $request, EntityManagerInterface $manager): Response {
         $tc = new TrainingCenter();
 
         $form = $this->createForm(TrainingCenterRegisterType::class, $tc);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $eventDispatcher->dispatch(new TrainingCenterRegisterEvent($tc));
+            $manager->persist($tc);
+            $manager->flush();
 
             $this->addFlash(
                 'success',

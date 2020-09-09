@@ -34,12 +34,12 @@ down: ## Switches off all running containers
 bash:  ## To access php container in command line
 	$(DOCKER_COMPOSE) exec php bash
 
-db: migrate fixtures ## Makes database ready to be used
+db: db-drop db-create migrate fixtures ## Makes database ready to be used
 
 fixtures: ## Makes data available for the application
-	$(EXEC_PHP) bin/console doctrine:fixtures:load --no-interaction
+	$(EXEC_PHP) bin/console doctrine:fixtures:load --no-interaction --append
 
-migrate: db-drop db-create ## Updates database schema
+migrate: ## Updates database schema
 	$(EXEC_PHP) bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
 
 migration: ## Generates migration files

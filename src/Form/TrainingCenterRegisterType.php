@@ -76,7 +76,7 @@ class TrainingCenterRegisterType extends ApplicationType
                     'choice_label' => 'name'
             ])
             ->add(
-                'hash',
+                'plainTextPassword',
                 PasswordType::class,
                 $this->getConfiguration('Password', 'Your Password...'),
             )

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\PasswordReset;
+use App\Entity\User;
 use App\Form\PasswordResetType;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -51,13 +52,13 @@ class AccountController extends AbstractController
         Request $request,
         EntityManagerInterface $manager,
         UserPasswordEncoderInterface $encoder
-    ): Response
-    {
+    ): Response {
         $passwordReset = new PasswordReset();
 
         $form = $this->createForm(PasswordResetType::class, $passwordReset);
         $form->handleRequest($request);
 
+        /** @var User $user */
         $user = $this->getUser();
 
         if ($form->isSubmitted() && $form->isValid()) {

@@ -4,12 +4,10 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\UserLambda;
-use App\Event\UserLambdaRegisterEvent;
 use App\Form\UserLambdaProfileType;
 use App\Form\UserLambdaRegisterType;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Psr\EventDispatcher\EventDispatcherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,17 +18,19 @@ class UserLambdaController extends AbstractController
 {
     /**
      * UserPasswordEncoderInterface is used in order to tell symfony which algorithm to use (security.yml)
-     * @Route("/register", name="user_lambda_register")
+     * @Route("/register", name="user_lambda_register", methods={"POST", "GET"})
      * @throws Exception
      */
-    public function register(Request $request, EventDispatcherInterface $eventDispatcher): Response {
+    public function register(Request $request, EntityManagerInterface $manager): Response
+    {
         $user = new UserLambda();
 
         $form = $this->createForm(UserLambdaRegisterType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $eventDispatcher->dispatch(new UserLambdaRegisterEvent($user));
+            $manager->persist($user);
+            $manager->flush();
 
             $this->addFlash(
                 'success',
